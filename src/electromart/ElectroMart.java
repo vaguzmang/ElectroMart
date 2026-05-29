@@ -4,6 +4,7 @@
  */
 package electromart;
 import electromart.model.Computadora;
+import electromart.model.Electrodomestico;
 /**
  *
  * @author camper
@@ -25,6 +26,19 @@ public class ElectroMart {
             pc1.setRamGB(16);
             
             System.out.println(pc1);
+            
+            System.out.println();
+            
+            Electrodomestico nevera1 = new Electrodomestico();
+            
+            nevera1.setCodigo("E001");
+            nevera1.setNombre("Nevera Samsung");
+            nevera1.setPrecioBase(2200);
+            nevera1.setStock(3);
+            nevera1.setConsumoEnergetico("A++");
+            nevera1.setGarantiaMeses(24);
+            System.out.println(nevera1);
+
     }
     
 }
