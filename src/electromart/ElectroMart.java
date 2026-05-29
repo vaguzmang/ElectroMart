@@ -5,6 +5,7 @@
 package electromart;
 import electromart.model.Computadora;
 import electromart.model.Electrodomestico;
+import electromart.model.Cliente;
 /**
  *
  * @author camper
@@ -40,6 +41,17 @@ public class ElectroMart {
             nevera1.setGarantiaMeses(24);
             System.out.println(nevera1);
             System.out.printf("Precio final electrodomestico: %.2f%n", nevera1.calcularPrecioFinal());
+            
+            System.out.println();
+            
+            Cliente cliente1 = new Cliente();
+                cliente1.setId(1);
+                cliente1.setNombre("Carlos Perez");
+                cliente1.setEmail("carlos@email.com");
+                cliente1.setTelefono("3001234567");
+                
+                System.out.println(cliente1);
+            
 
     }
     
