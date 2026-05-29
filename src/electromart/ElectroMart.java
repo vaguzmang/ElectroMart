@@ -26,6 +26,7 @@ public class ElectroMart {
             pc1.setRamGB(16);
             
             System.out.println(pc1);
+            System.out.printf("Precio final computadora: %.2f%n", pc1.calcularPrecioFinal());
             
             System.out.println();
             
@@ -38,6 +39,7 @@ public class ElectroMart {
             nevera1.setConsumoEnergetico("A++");
             nevera1.setGarantiaMeses(24);
             System.out.println(nevera1);
+            System.out.printf("Precio final electrodomestico: %.2f%n", nevera1.calcularPrecioFinal());
 
     }
     
