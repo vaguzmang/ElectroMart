@@ -4,6 +4,7 @@
  */
 package electromart.model;
 
+import java.util.ArrayList;
 /**
  *
  * @author VíctorAlfonsoGuzmánG
@@ -13,8 +14,11 @@ public class Pedido {
     private Cliente cliente;
     private String fecha;
     private String estado;
-
+    private ArrayList<DetallePedido> detalles;
+    
+    
     public Pedido() {
+        this.detalles = new ArrayList<>();
     }
 
     public Pedido(int id, Cliente cliente, String fecha, String estado) {
@@ -22,6 +26,7 @@ public class Pedido {
         this.cliente = cliente;
         this.fecha = fecha;
         this.estado = estado;
+        this.detalles = new ArrayList<>();
     }
 
     public int getId() {
@@ -56,6 +61,23 @@ public class Pedido {
         this.estado = estado;
     }
     
+    public ArrayList<DetallePedido> getDetalles() {
+        return detalles;
+    }
+
+    public void agregarDetalle(DetallePedido detalle) {
+        detalles.add(detalle);
+    }
+
+    public double calcularTotal() {
+        double total = 0;
+
+        for (DetallePedido detalle : detalles) {
+            total += detalle.calcularSubtotal();
+        }
+
+        return total;
+    }
     @Override
     public String toString() {
         return "Pedido\n" +

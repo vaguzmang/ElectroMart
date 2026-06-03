@@ -73,6 +73,24 @@ public class ElectroMart {
         detalle1.setProducto(pc1);
         detalle1.setCantidad(1);
         detalle1.setPrecioUnitario(pc1.getPrecioBase());
+
+        pedido1.agregarDetalle(detalle1);
+
+        DetallePedido detalle2 = new DetallePedido();
+        detalle2.setId(2);
+        detalle2.setProducto(nevera1);
+        detalle2.setCantidad(1);
+        detalle2.setPrecioUnitario(nevera1.getPrecioBase());
+
+        pedido1.agregarDetalle(detalle2);
+
+        System.out.println(detalle1);
+
+        System.out.println();
+
+        System.out.println(detalle2);
+
+        System.out.printf("Total del pedido: %.2f%n", pedido1.calcularTotal());
     }
 
 }
