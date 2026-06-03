@@ -8,7 +8,10 @@ import electromart.model.Computadora;
 import electromart.model.Electrodomestico;
 import electromart.model.Cliente;
 import electromart.model.Pedido;
+import electromart.model.EstadoPedido;
 import electromart.model.DetallePedido;
+
+
 
 /**
  *
@@ -62,9 +65,7 @@ public class ElectroMart {
         pedido1.setId(1);
         pedido1.setCliente(cliente1);
         pedido1.setFecha("2026-05-28");
-        pedido1.setEstado("Pendiente");
-
-        System.out.println(pedido1);
+        pedido1.setEstado(EstadoPedido.PENDIENTE);
 
         System.out.println();
 
@@ -83,7 +84,11 @@ public class ElectroMart {
         detalle2.setPrecioUnitario(nevera1.getPrecioBase());
 
         pedido1.agregarDetalle(detalle2);
-
+        
+        System.out.println(pedido1);
+        
+        System.out.println();
+        
         System.out.println(detalle1);
 
         System.out.println();
@@ -91,6 +96,10 @@ public class ElectroMart {
         System.out.println(detalle2);
 
         System.out.printf("Total del pedido: %.2f%n", pedido1.calcularTotal());
+        
+        System.out.println();
+        System.out.println("Stock final computadora: " + pc1.getStock());
+        System.out.println("Stock final nevera: " + nevera1.getStock());
     }
 
 }
