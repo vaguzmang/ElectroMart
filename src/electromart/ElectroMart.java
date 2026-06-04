@@ -12,6 +12,7 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import electromart.model.Producto;
 import electromart.view.MenuConsola;
+import electromart.controller.SistemaController;
 
 public class ElectroMart {
 
@@ -21,6 +22,7 @@ public class ElectroMart {
         int opcion;
         
         MenuConsola menu = new MenuConsola();
+        SistemaController controller = new SistemaController();
 
         Usuario usuario1 = new Usuario();
         usuario1.setId(1);
@@ -107,77 +109,32 @@ public class ElectroMart {
             switch (opcion) {
                 case 1:
                     System.out.println();
-
-                    for (Usuario usuario : usuarios) {
-                        System.out.println(usuario);
-                        System.out.println();
-                    }
-
+                    controller.mostrarUsuarios(usuarios);
                     break;
 
                 case 2:
                     System.out.println();
-
-                    for (Producto producto : productos) {
-                        System.out.println(producto);
-                        System.out.printf("Precio final: %.2f%n", producto.calcularPrecioFinal());
-                        System.out.println();
-                    }
-
+                    controller.mostrarProductos(productos);
                     break;
 
                 case 3:
-                        System.out.println();
-
-                        for (Cliente cliente : clientes) {
-                            System.out.println(cliente);
-                            System.out.println();
-                        }
-
-                        break;
+                    System.out.println();
+                    controller.mostrarClientes(clientes);
+                    break;
 
                 case 4:
-                        System.out.println();
-
-                        for (Pedido pedido : pedidos) {
-                            System.out.println(pedido);
-                            System.out.println();
-
-                            for (DetallePedido detalle : pedido.getDetalles()) {
-                                System.out.println(detalle);
-                                System.out.println();
-                            }
-
-                            System.out.printf("Total del pedido: %.2f%n", pedido.calcularTotal());
-                            System.out.println();
-                        }
-
-                        break;
+                    System.out.println();
+                    controller.mostrarPedidos(pedidos);
+                    break;
 
                 case 5:
                     System.out.println();
-                    System.out.println("Permisos del sistema:");
-
-                    if (usuario1.esAdministrador()) {
-                        System.out.println(usuario1.getNombreUsuario() + " puede ver reportes.");
-                    }
-
-                    if (usuario2.esGerenteInventario()) {
-                        System.out.println(usuario2.getNombreUsuario() + " puede gestionar productos e inventario.");
-                    }
-
-                    if (usuario3.esOperadorPedidos()) {
-                        System.out.println(usuario3.getNombreUsuario() + " puede gestionar pedidos.");
-                    }
-
-                    System.out.println();
+                    controller.mostrarPermisos(usuarios);
                     break;
 
                 case 6:
                     System.out.println();
-                    System.out.println("Stock final computadora: " + pc1.getStock());
-                    System.out.println("Stock final nevera: " + nevera1.getStock());
-                    System.out.println();
+                    controller.mostrarStock(productos);
                     break;
 
                 case 0:
