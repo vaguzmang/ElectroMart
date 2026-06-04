@@ -10,20 +10,45 @@ import electromart.model.Cliente;
 import electromart.model.Pedido;
 import electromart.model.EstadoPedido;
 import electromart.model.DetallePedido;
+import electromart.model.Usuario;
+import electromart.model.Rol;
 
-
-
-/**
- *
- * @author camper
- */
 public class ElectroMart {
 
-    /**
-     * @param args the command line arguments
-     */
+    
     public static void main(String[] args) {
 
+        Usuario usuario1 = new Usuario();
+        usuario1.setId(1);
+        usuario1.setNombreUsuario("admin");
+        usuario1.setPassword("1234");
+        usuario1.setRol(Rol.ADMINISTRADOR);
+              
+        Usuario usuario2 = new Usuario();
+        usuario2.setId(2);
+        usuario2.setNombreUsuario("inventario");
+        usuario2.setPassword("1234");
+        usuario2.setRol(Rol.GERENTE_INVENTARIO);
+                
+        Usuario usuario3 = new Usuario();
+        usuario3.setId(3);
+        usuario3.setNombreUsuario("pedidos");
+        usuario3.setPassword("1234");
+        usuario3.setRol(Rol.OPERADOR_PEDIDOS);
+
+        System.out.println(usuario1);
+        System.out.println("¿Es administrador? " + usuario1.esAdministrador());
+        System.out.println();
+
+        System.out.println(usuario2);
+        System.out.println("¿Es administrador? " + usuario2.esAdministrador());
+        System.out.println("¿Es gerente de inventario? " + usuario2.esGerenteInventario());
+        System.out.println();
+
+        System.out.println(usuario3);
+        System.out.println("¿Es operador de pedidos? " + usuario3.esOperadorPedidos());
+        System.out.println();
+        
         Computadora pc1 = new Computadora();
 
         pc1.setCodigo("PC001");
