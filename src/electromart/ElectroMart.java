@@ -9,6 +9,8 @@ import electromart.model.DetallePedido;
 import electromart.model.Usuario;
 import electromart.model.Rol;
 import java.util.Scanner;
+import java.util.ArrayList;
+import electromart.model.Producto;
 
 public class ElectroMart {
 
@@ -34,7 +36,12 @@ public class ElectroMart {
         usuario3.setNombreUsuario("pedidos");
         usuario3.setPassword("1234");
         usuario3.setRol(Rol.OPERADOR_PEDIDOS);
-
+        
+        ArrayList<Usuario> usuarios = new ArrayList<>();
+        usuarios.add(usuario1);
+        usuarios.add(usuario2);
+        usuarios.add(usuario3);
+        
         Computadora pc1 = new Computadora();
         pc1.setCodigo("PC001");
         pc1.setNombre("Asus Gamer");
@@ -51,11 +58,18 @@ public class ElectroMart {
         nevera1.setConsumoEnergetico("A++");
         nevera1.setGarantiaMeses(24);
 
+        ArrayList<Producto> productos = new ArrayList<>();
+        productos.add(pc1);
+        productos.add(nevera1);
+        
         Cliente cliente1 = new Cliente();
         cliente1.setId(1);
         cliente1.setNombre("Carlos Perez");
         cliente1.setEmail("carlos@email.com");
         cliente1.setTelefono("3001234567");
+        
+        ArrayList<Cliente> clientes = new ArrayList<>();
+        clientes.add(cliente1);
 
         Pedido pedido1 = new Pedido();
         pedido1.setId(1);
@@ -78,6 +92,9 @@ public class ElectroMart {
         detalle2.setPrecioUnitario(nevera1.getPrecioBase());
 
         pedido1.agregarDetalle(detalle2);
+        
+        ArrayList<Pedido> pedidos = new ArrayList<>();
+        pedidos.add(pedido1);
 
         do {
             System.out.println("===== MENU ELECTROMART =====");
@@ -95,40 +112,52 @@ public class ElectroMart {
             switch (opcion) {
                 case 1:
                     System.out.println();
-                    System.out.println(usuario1);
-                    System.out.println();
-                    System.out.println(usuario2);
-                    System.out.println();
-                    System.out.println(usuario3);
-                    System.out.println();
+
+                    for (Usuario usuario : usuarios) {
+                        System.out.println(usuario);
+                        System.out.println();
+                    }
+
                     break;
 
                 case 2:
                     System.out.println();
-                    System.out.println(pc1);
-                    System.out.printf("Precio final computadora: %.2f%n", pc1.calcularPrecioFinal());
-                    System.out.println();
-                    System.out.println(nevera1);
-                    System.out.printf("Precio final electrodomestico: %.2f%n", nevera1.calcularPrecioFinal());
-                    System.out.println();
+
+                    for (Producto producto : productos) {
+                        System.out.println(producto);
+                        System.out.printf("Precio final: %.2f%n", producto.calcularPrecioFinal());
+                        System.out.println();
+                    }
+
                     break;
 
                 case 3:
-                    System.out.println();
-                    System.out.println(cliente1);
-                    System.out.println();
-                    break;
+                        System.out.println();
+
+                        for (Cliente cliente : clientes) {
+                            System.out.println(cliente);
+                            System.out.println();
+                        }
+
+                        break;
 
                 case 4:
-                    System.out.println();
-                    System.out.println(pedido1);
-                    System.out.println();
-                    System.out.println(detalle1);
-                    System.out.println();
-                    System.out.println(detalle2);
-                    System.out.printf("Total del pedido: %.2f%n", pedido1.calcularTotal());
-                    System.out.println();
-                    break;
+                        System.out.println();
+
+                        for (Pedido pedido : pedidos) {
+                            System.out.println(pedido);
+                            System.out.println();
+
+                            for (DetallePedido detalle : pedido.getDetalles()) {
+                                System.out.println(detalle);
+                                System.out.println();
+                            }
+
+                            System.out.printf("Total del pedido: %.2f%n", pedido.calcularTotal());
+                            System.out.println();
+                        }
+
+                        break;
 
                 case 5:
                     System.out.println();
