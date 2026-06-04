@@ -11,6 +11,7 @@ import electromart.model.Rol;
 import java.util.Scanner;
 import java.util.ArrayList;
 import electromart.model.Producto;
+import electromart.view.MenuConsola;
 
 public class ElectroMart {
 
@@ -18,6 +19,8 @@ public class ElectroMart {
 
         Scanner sc = new Scanner(System.in);
         int opcion;
+        
+        MenuConsola menu = new MenuConsola();
 
         Usuario usuario1 = new Usuario();
         usuario1.setId(1);
@@ -97,15 +100,7 @@ public class ElectroMart {
         pedidos.add(pedido1);
 
         do {
-            System.out.println("===== MENU ELECTROMART =====");
-            System.out.println("1. Ver usuarios");
-            System.out.println("2. Ver productos");
-            System.out.println("3. Ver cliente");
-            System.out.println("4. Ver pedido");
-            System.out.println("5. Ver permisos");
-            System.out.println("6. Ver stock final");
-            System.out.println("0. Salir");
-            System.out.print("Seleccione una opcion: ");
+            menu.mostrarMenu();
 
             opcion = sc.nextInt();
 
