@@ -49,6 +49,22 @@ public class ElectroMart {
         System.out.println("¿Es operador de pedidos? " + usuario3.esOperadorPedidos());
         System.out.println();
         
+        System.out.println("Permisos del sistema:");
+        
+        if (usuario1.esAdministrador()) {
+            System.out.println(usuario1.getNombreUsuario() + " puede ver reportes.");
+        }
+
+        if (usuario2.esGerenteInventario()) {
+            System.out.println(usuario2.getNombreUsuario() + " puede gestionar productos e inventario.");
+        }
+
+        if (usuario3.esOperadorPedidos()) {
+            System.out.println(usuario3.getNombreUsuario() + " puede gestionar pedidos.");
+        }
+
+        System.out.println();
+        
         Computadora pc1 = new Computadora();
 
         pc1.setCodigo("PC001");
