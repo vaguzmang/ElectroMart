@@ -73,4 +73,15 @@ public class SistemaController {
 
         System.out.println();
     }
+    
+    public Usuario login(ArrayList<Usuario> usuarios, String nombreUsuario, String password) {
+        for (Usuario usuario : usuarios) {
+            if (usuario.getNombreUsuario().equals(nombreUsuario)
+                    && usuario.getPassword().equals(password)) {
+                return usuario;
+            }
+        }
+
+        return null;
+    }
 }

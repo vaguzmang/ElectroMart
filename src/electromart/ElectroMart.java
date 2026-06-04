@@ -47,6 +47,35 @@ public class ElectroMart {
         usuarios.add(usuario2);
         usuarios.add(usuario3);
         
+       Usuario usuarioActual = null;
+        int intentos = 0;
+
+        while (usuarioActual == null && intentos < 3) {
+            System.out.println("===== LOGIN ELECTROMART =====");
+            System.out.print("Usuario: ");
+            String nombreUsuario = sc.next();
+
+            System.out.print("Password: ");
+            String password = sc.next();
+
+            usuarioActual = controller.login(usuarios, nombreUsuario, password);
+
+            if (usuarioActual == null) {
+                intentos++;
+                System.out.println("Credenciales incorrectas. Intento " + intentos + " de 3.");
+                System.out.println();
+            }
+        }
+
+        if (usuarioActual == null) {
+            System.out.println("Demasiados intentos fallidos. Cerrando sistema.");
+            return;
+        }
+
+        System.out.println("Bienvenido, " + usuarioActual.getNombreUsuario());
+        System.out.println("Rol: " + usuarioActual.getRol());
+        System.out.println();
+        
         Computadora pc1 = new Computadora();
         pc1.setCodigo("PC001");
         pc1.setNombre("Asus Gamer");
