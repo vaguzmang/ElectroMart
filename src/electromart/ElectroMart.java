@@ -12,12 +12,16 @@ import electromart.model.EstadoPedido;
 import electromart.model.DetallePedido;
 import electromart.model.Usuario;
 import electromart.model.Rol;
+import java.util.Scanner;
 
 public class ElectroMart {
 
     
     public static void main(String[] args) {
-
+        
+        Scanner sc = new Scanner(System.in);
+        int opcion;
+        
         Usuario usuario1 = new Usuario();
         usuario1.setId(1);
         usuario1.setNombreUsuario("admin");
@@ -141,6 +145,55 @@ public class ElectroMart {
         System.out.println();
         System.out.println("Stock final computadora: " + pc1.getStock());
         System.out.println("Stock final nevera: " + nevera1.getStock());
+        
+        do {
+            System.out.println("===== MENU ELECTROMART =====");
+            System.out.println("1. Ver usuarios");
+            System.out.println("2. Ver productos");
+            System.out.println("3. Ver cliente");
+            System.out.println("4. Ver pedido");
+            System.out.println("0. Salir");
+            System.out.print("Seleccione una opcion: ");
+            
+            opcion = sc.nextInt();
+            
+            switch (opcion) {
+                case 1:
+                    System.out.println(usuario1);
+                    System.out.println(usuario2);
+                    System.out.println(usuario3);
+                    break;
+
+                case 2:
+                    System.out.println(pc1);
+                    System.out.println();
+                    System.out.println(nevera1);
+                    break;
+
+                case 3:
+                    System.out.println(cliente1);
+                    break;
+
+                case 4:
+                    System.out.println(pedido1);
+                    System.out.println();
+                    System.out.println(detalle1);
+                    System.out.println();
+                    System.out.println(detalle2);
+                    System.out.printf("Total del pedido: %.2f%n", pedido1.calcularTotal());
+                    break;
+
+                case 0:
+                    System.out.println("Saliendo del sistema...");
+                    break;
+
+                default:
+                    System.out.println("Opcion no valida.");
+                    break;
+            }
+                
+
+        } while (opcion != 0);
     }
 
 }
