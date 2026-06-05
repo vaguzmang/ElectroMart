@@ -134,48 +134,117 @@ public class ElectroMart {
                 System.out.println();
 
                 do {
-                    menu.mostrarMenu();
+                    menu.mostrarMenu(usuarioActual);
 
-                    opcion = sc.nextInt();
+                    if (sc.hasNextInt()) {
+                        opcion = sc.nextInt();
+                    } else {
+                        System.out.println("Debe ingresar un numero valido.");
+                        sc.next();
+                        opcion = -1;
+                    }
 
                     switch (opcion) {
                         case 1:
-                            System.out.println();
-                            controller.mostrarUsuarios(usuarios);
+                            if (usuarioActual.esAdministrador()) {
+                                System.out.println();
+                                controller.mostrarUsuarios(usuarios);
+                            } else {
+                                System.out.println("No tiene permisos para ver usuarios.");
+                                System.out.println();
+                            }
                             menu.pausar(sc);
                             break;
 
                         case 2:
-                            System.out.println();
-                            controller.mostrarProductos(productos);
+                            if (usuarioActual.esAdministrador() || usuarioActual.esGerenteInventario()) {
+                                System.out.println();
+                                controller.mostrarProductos(productos);
+                            } else {
+                                System.out.println("No tiene permisos para ver productos.");
+                                System.out.println();
+                            }
                             menu.pausar(sc);
                             break;
 
                         case 3:
-                            System.out.println();
-                            controller.mostrarClientes(clientes);
+                            if (usuarioActual.esAdministrador() || usuarioActual.esOperadorPedidos()) {
+                                System.out.println();
+                                controller.mostrarClientes(clientes);
+                            } else {
+                                System.out.println("No tiene permisos para ver clientes.");
+                                System.out.println();
+                            }
                             menu.pausar(sc);
                             break;
 
                         case 4:
-                            System.out.println();
-                            controller.mostrarPedidos(pedidos);
+                            if (usuarioActual.esAdministrador() || usuarioActual.esOperadorPedidos()) {
+                                System.out.println();
+                                controller.mostrarPedidos(pedidos);
+                            } else {
+                                System.out.println("No tiene permisos para ver pedidos.");
+                                System.out.println();
+                            }
                             menu.pausar(sc);
                             break;
 
                         case 5:
-                            System.out.println();
-                            controller.mostrarPermisos(usuarios);
+                            if (usuarioActual.esAdministrador()) {
+                                System.out.println();
+                                controller.mostrarPermisos(usuarios);
+                            } else {
+                                System.out.println("No tiene permisos para ver permisos del sistema.");
+                                System.out.println();
+                            }
                             menu.pausar(sc);
                             break;
 
                         case 6:
-                            System.out.println();
-                            controller.mostrarStock(productos);
+                            if (usuarioActual.esAdministrador() || usuarioActual.esGerenteInventario()) {
+                                System.out.println();
+                                controller.mostrarStock(productos);
+                            } else {
+                                System.out.println("No tiene permisos para ver stock.");
+                                System.out.println();
+                            }
                             menu.pausar(sc);
                             break;
 
-                        case 7:
+                        case 8:
+                            if (usuarioActual.esAdministrador() || usuarioActual.esGerenteInventario()) {
+                                System.out.println();
+                                controller.registrarComputadora(productos, sc);
+                            } else {
+                                System.out.println("No tiene permisos para registrar computadoras.");
+                                System.out.println();
+                            }
+                            menu.pausar(sc);
+                            break;
+
+                        case 9:
+                            if (usuarioActual.esAdministrador() || usuarioActual.esOperadorPedidos()) {
+                                System.out.println();
+                                controller.registrarCliente(clientes, sc);
+                            } else {
+                                System.out.println("No tiene permisos para registrar clientes.");
+                                System.out.println();
+                            }
+                            menu.pausar(sc);
+                            break;
+
+                        case 10:
+                            if (usuarioActual.esAdministrador() || usuarioActual.esGerenteInventario()) {
+                                System.out.println();
+                                controller.registrarElectrodomestico(productos, sc);
+                            } else {
+                                System.out.println("No tiene permisos para registrar electrodomesticos.");
+                                System.out.println();
+                            }
+                            menu.pausar(sc);
+                            break;
+
+                        case 99:
                             System.out.println("Sesion cerrada.");
                             System.out.println();
                             break;
@@ -191,8 +260,7 @@ public class ElectroMart {
                             menu.pausar(sc);
                             break;
                     }
-
-                } while (opcion != 0 && opcion != 7);
+                } while (opcion != 0 && opcion != 99);
             }
         }
 

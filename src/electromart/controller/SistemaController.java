@@ -1,11 +1,14 @@
 package electromart.controller;
 
 import electromart.model.Cliente;
+import electromart.model.Computadora;
 import electromart.model.DetallePedido;
+import electromart.model.Electrodomestico;
 import electromart.model.Pedido;
 import electromart.model.Producto;
 import electromart.model.Usuario;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class SistemaController {
 
@@ -139,6 +142,97 @@ public class SistemaController {
                     producto.getStock());
         }
 
+        System.out.println();
+    }
+
+    public void registrarComputadora(ArrayList<Producto> productos, Scanner sc) {
+        Computadora computadora = new Computadora();
+
+        System.out.println("===== REGISTRAR COMPUTADORA =====");
+
+        System.out.print("Codigo: ");
+        computadora.setCodigo(sc.next());
+
+        sc.nextLine();
+
+        System.out.print("Nombre: ");
+        computadora.setNombre(sc.nextLine());
+
+        System.out.print("Precio base: ");
+        computadora.setPrecioBase(sc.nextDouble());
+
+        System.out.print("Stock: ");
+        computadora.setStock(sc.nextInt());
+
+        sc.nextLine();
+
+        System.out.print("Procesador: ");
+        computadora.setProcesador(sc.nextLine());
+
+        System.out.print("RAM GB: ");
+        computadora.setRamGB(sc.nextInt());
+
+        productos.add(computadora);
+
+        System.out.println("Computadora registrada correctamente.");
+        System.out.println();
+    }
+
+    public void registrarCliente(ArrayList<Cliente> clientes, Scanner sc) {
+        Cliente cliente = new Cliente();
+
+        System.out.println("===== REGISTRAR CLIENTE =====");
+
+        System.out.print("ID: ");
+        cliente.setId(sc.nextInt());
+
+        sc.nextLine();
+
+        System.out.print("Nombre: ");
+        cliente.setNombre(sc.nextLine());
+
+        System.out.print("Email: ");
+        cliente.setEmail(sc.nextLine());
+
+        System.out.print("Telefono: ");
+        cliente.setTelefono(sc.nextLine());
+
+        clientes.add(cliente);
+
+        System.out.println("Cliente registrado correctamente.");
+        System.out.println();
+    }
+
+    public void registrarElectrodomestico(ArrayList<Producto> productos, Scanner sc) {
+        Electrodomestico electrodomestico = new Electrodomestico();
+
+        System.out.println("===== REGISTRAR ELECTRODOMESTICO =====");
+
+        System.out.print("Codigo: ");
+        electrodomestico.setCodigo(sc.next());
+
+        sc.nextLine();
+
+        System.out.print("Nombre: ");
+        electrodomestico.setNombre(sc.nextLine());
+
+        System.out.print("Precio base: ");
+        electrodomestico.setPrecioBase(sc.nextDouble());
+
+        System.out.print("Stock: ");
+        electrodomestico.setStock(sc.nextInt());
+
+        sc.nextLine();
+
+        System.out.print("Consumo energetico: ");
+        electrodomestico.setConsumoEnergetico(sc.nextLine());
+
+        System.out.print("Garantia en meses: ");
+        electrodomestico.setGarantiaMeses(sc.nextInt());
+
+        productos.add(electrodomestico);
+
+        System.out.println("Electrodomestico registrado correctamente.");
         System.out.println();
     }
 
