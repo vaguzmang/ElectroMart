@@ -159,19 +159,16 @@ public class SistemaController {
         System.out.print("Nombre: ");
         computadora.setNombre(sc.nextLine());
 
-        System.out.print("Precio base: ");
-        computadora.setPrecioBase(sc.nextDouble());
-
-        System.out.print("Stock: ");
-        computadora.setStock(sc.nextInt());
+        computadora.setPrecioBase(leerDoublePositivo(sc, "Precio base: "));
+        
+        computadora.setStock(leerEnteroPositivo(sc, "Stock: "));
 
         sc.nextLine();
 
         System.out.print("Procesador: ");
         computadora.setProcesador(sc.nextLine());
 
-        System.out.print("RAM GB: ");
-        computadora.setRamGB(sc.nextInt());
+        computadora.setRamGB(leerEnteroPositivo(sc, "RAM GB: "));
 
         productos.add(computadora);
 
@@ -184,8 +181,7 @@ public class SistemaController {
 
         System.out.println("===== REGISTRAR CLIENTE =====");
 
-        System.out.print("ID: ");
-        cliente.setId(sc.nextInt());
+        cliente.setId(leerEnteroPositivo(sc, "ID: "));
 
         sc.nextLine();
 
@@ -217,19 +213,16 @@ public class SistemaController {
         System.out.print("Nombre: ");
         electrodomestico.setNombre(sc.nextLine());
 
-        System.out.print("Precio base: ");
-        electrodomestico.setPrecioBase(sc.nextDouble());
-
-        System.out.print("Stock: ");
-        electrodomestico.setStock(sc.nextInt());
+        electrodomestico.setPrecioBase(leerDoublePositivo(sc, "Precio base: "));
+        
+        electrodomestico.setStock(leerEnteroPositivo(sc, "Stock: "));
 
         sc.nextLine();
 
         System.out.print("Consumo energetico: ");
         electrodomestico.setConsumoEnergetico(sc.nextLine());
 
-        System.out.print("Garantia en meses: ");
-        electrodomestico.setGarantiaMeses(sc.nextInt());
+        electrodomestico.setGarantiaMeses(leerEnteroPositivo(sc, "Garantia en meses: "));
 
         productos.add(electrodomestico);
 
@@ -277,8 +270,7 @@ public class SistemaController {
         System.out.println();
         mostrarClientes(clientes);
 
-        System.out.print("Ingrese ID del cliente: ");
-        int idCliente = sc.nextInt();
+        int idCliente = leerEnteroPositivo(sc, "Ingrese ID del cliente: ");
 
         Cliente cliente = buscarClientePorId(clientes, idCliente);
 
@@ -300,8 +292,7 @@ public class SistemaController {
             return;
         }
 
-        System.out.print("Ingrese cantidad: ");
-        int cantidad = sc.nextInt();
+        int cantidad = leerEnteroPositivo(sc, "Ingrese cantidad: ");
 
         if (cantidad <= 0) {
             System.out.println("La cantidad debe ser mayor que cero.");
@@ -407,6 +398,63 @@ public class SistemaController {
         return false;
     }
     
+    public int leerEntero(Scanner sc, String mensaje) {
+        while (true) {
+            System.out.print(mensaje);
+
+            if (sc.hasNextInt()) {
+                int valor = sc.nextInt();
+                return valor;
+            } else {
+                System.out.println("Error: debe ingresar un numero entero.");
+                sc.next();
+            }
+        }
+    }
+
+    public double leerDouble(Scanner sc, String mensaje) {
+        while (true) {
+            System.out.print(mensaje);
+
+            if (sc.hasNextDouble()) {
+                double valor = sc.nextDouble();
+                return valor;
+            } else {
+                System.out.println("Error: debe ingresar un numero valido.");
+                sc.next();
+            }
+        }
+    }
+
+    public int leerEnteroPositivo(Scanner sc, String mensaje) {
+        int valor;
+
+        do {
+            valor = leerEntero(sc, mensaje);
+
+            if (valor <= 0) {
+                System.out.println("Error: el valor debe ser mayor que cero.");
+            }
+
+        } while (valor <= 0);
+
+        return valor;
+    }
+
+    public double leerDoublePositivo(Scanner sc, String mensaje) {
+        double valor;
+
+        do {
+            valor = leerDouble(sc, mensaje);
+
+            if (valor < 0) {
+                System.out.println("Error: el valor no puede ser negativo.");
+            }
+
+        } while (valor < 0);
+
+        return valor;
+    }
     public Usuario login(ArrayList<Usuario> usuarios, String nombreUsuario, String password) {
         for (Usuario usuario : usuarios) {
             if (usuario.getNombreUsuario().equals(nombreUsuario)
