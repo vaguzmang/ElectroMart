@@ -9,6 +9,7 @@ import electromart.model.Producto;
 import electromart.model.Usuario;
 import java.util.ArrayList;
 import java.util.Scanner;
+import electromart.model.EstadoPedido;
 
 public class SistemaController {
 
@@ -236,6 +237,102 @@ public class SistemaController {
         System.out.println();
     }
 
+    public Cliente buscarClientePorId(ArrayList<Cliente> clientes, int id) {
+        for (Cliente cliente : clientes) {
+            if (cliente.getId() == id) {
+                return cliente;
+            }
+        }
+
+        return null;
+    }
+
+    public Producto buscarProductoPorCodigo(ArrayList<Producto> productos, String codigo) {
+        for (Producto producto : productos) {
+            if (producto.getCodigo().equalsIgnoreCase(codigo)) {
+                return producto;
+            }
+        }
+
+        return null;
+    }
+
+    public void crearPedido(ArrayList<Pedido> pedidos,
+            ArrayList<Cliente> clientes,
+            ArrayList<Producto> productos,
+            Scanner sc) {
+
+        System.out.println("===== CREAR PEDIDO =====");
+
+        if (clientes.isEmpty()) {
+            System.out.println("No hay clientes registrados.");
+            return;
+        }
+
+        if (productos.isEmpty()) {
+            System.out.println("No hay productos registrados.");
+            return;
+        }
+
+        System.out.println();
+        mostrarClientes(clientes);
+
+        System.out.print("Ingrese ID del cliente: ");
+        int idCliente = sc.nextInt();
+
+        Cliente cliente = buscarClientePorId(clientes, idCliente);
+
+        if (cliente == null) {
+            System.out.println("Cliente no encontrado.");
+            return;
+        }
+
+        System.out.println();
+        mostrarProductos(productos);
+
+        System.out.print("Ingrese codigo del producto: ");
+        String codigoProducto = sc.next();
+
+        Producto producto = buscarProductoPorCodigo(productos, codigoProducto);
+
+        if (producto == null) {
+            System.out.println("Producto no encontrado.");
+            return;
+        }
+
+        System.out.print("Ingrese cantidad: ");
+        int cantidad = sc.nextInt();
+
+        if (cantidad <= 0) {
+            System.out.println("La cantidad debe ser mayor que cero.");
+            return;
+        }
+
+        if (cantidad > producto.getStock()) {
+            System.out.println("Stock insuficiente para el producto: " + producto.getNombre());
+            return;
+        }
+
+        Pedido pedido = new Pedido();
+        pedido.setId(pedidos.size() + 1);
+        pedido.setCliente(cliente);
+        pedido.setFecha("2026-06-04");
+        pedido.setEstado(EstadoPedido.PENDIENTE);
+
+        DetallePedido detalle = new DetallePedido();
+        detalle.setId(1);
+        detalle.setProducto(producto);
+        detalle.setCantidad(cantidad);
+        detalle.setPrecioUnitario(producto.getPrecioBase());
+
+        pedido.agregarDetalle(detalle);
+        pedidos.add(pedido);
+
+        System.out.println("Pedido creado correctamente.");
+        System.out.printf("Total del pedido: %.2f%n", pedido.calcularTotal());
+        System.out.println();
+    }
+    
     public Usuario login(ArrayList<Usuario> usuarios, String nombreUsuario, String password) {
         for (Usuario usuario : usuarios) {
             if (usuario.getNombreUsuario().equals(nombreUsuario)

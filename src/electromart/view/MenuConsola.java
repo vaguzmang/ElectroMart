@@ -18,6 +18,7 @@ public class MenuConsola {
             System.out.println("8. Registrar computadora");
             System.out.println("9. Registrar cliente");
             System.out.println("10. Registrar electrodomestico");
+            System.out.println("11. Crear pedido");
         }
 
         if (usuarioActual.esGerenteInventario()) {
@@ -31,6 +32,7 @@ public class MenuConsola {
             System.out.println("3. Ver clientes");
             System.out.println("4. Ver pedidos");
             System.out.println("9. Registrar cliente");
+            System.out.println("11. Crear pedido");
         }
 
         System.out.println("99. Cerrar sesion");

@@ -63,9 +63,45 @@ public class ElectroMart {
         nevera1.setConsumoEnergetico("A++");
         nevera1.setGarantiaMeses(24);
 
+        Computadora pc2 = new Computadora();
+        pc2.setCodigo("PC002");
+        pc2.setNombre("Lenovo ThinkPad");
+        pc2.setPrecioBase(2800);
+        pc2.setStock(8);
+        pc2.setProcesador("AMD Ryzen 5");
+        pc2.setRamGB(16);
+
+        Computadora pc3 = new Computadora();
+        pc3.setCodigo("PC003");
+        pc3.setNombre("HP Pavilion");
+        pc3.setPrecioBase(2400);
+        pc3.setStock(6);
+        pc3.setProcesador("Intel i5");
+        pc3.setRamGB(8);
+
+        Electrodomestico lavadora1 = new Electrodomestico();
+        lavadora1.setCodigo("E002");
+        lavadora1.setNombre("Lavadora LG");
+        lavadora1.setPrecioBase(1800);
+        lavadora1.setStock(4);
+        lavadora1.setConsumoEnergetico("A+");
+        lavadora1.setGarantiaMeses(24);
+
+        Electrodomestico tv1 = new Electrodomestico();
+        tv1.setCodigo("E003");
+        tv1.setNombre("TV Samsung 55");
+        tv1.setPrecioBase(2600);
+        tv1.setStock(7);
+        tv1.setConsumoEnergetico("A");
+        tv1.setGarantiaMeses(12);
+
         ArrayList<Producto> productos = new ArrayList<>();
         productos.add(pc1);
         productos.add(nevera1);
+        productos.add(pc2);
+        productos.add(pc3);
+        productos.add(lavadora1);
+        productos.add(tv1);
 
         Cliente cliente1 = new Cliente();
         cliente1.setId(1);
@@ -239,6 +275,17 @@ public class ElectroMart {
                                 controller.registrarElectrodomestico(productos, sc);
                             } else {
                                 System.out.println("No tiene permisos para registrar electrodomesticos.");
+                                System.out.println();
+                            }
+                            menu.pausar(sc);
+                            break;
+                                    
+                        case 11:
+                            if (usuarioActual.esAdministrador() || usuarioActual.esOperadorPedidos()) {
+                                System.out.println();
+                                controller.crearPedido(pedidos, clientes, productos, sc);
+                            } else {
+                                System.out.println("No tiene permisos para crear pedidos.");
                                 System.out.println();
                             }
                             menu.pausar(sc);
