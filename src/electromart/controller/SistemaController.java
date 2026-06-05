@@ -10,56 +10,115 @@ import java.util.ArrayList;
 public class SistemaController {
 
     public void mostrarUsuarios(ArrayList<Usuario> usuarios) {
+        System.out.println("===== USUARIOS =====");
+        System.out.printf("%-5s %-15s %-25s%n", "ID", "USUARIO", "ROL");
+        System.out.println("------------------------------------------------");
+
         for (Usuario usuario : usuarios) {
-            System.out.println(usuario);
-            System.out.println();
+            System.out.printf("%-5d %-15s %-25s%n",
+                    usuario.getId(),
+                    usuario.getNombreUsuario(),
+                    usuario.getRol());
         }
+
+        System.out.println();
     }
 
     public void mostrarProductos(ArrayList<Producto> productos) {
+        System.out.println("===== PRODUCTOS =====");
+        System.out.printf("%-10s %-20s %-18s %-12s %-10s %-12s%n",
+                "CODIGO", "NOMBRE", "TIPO", "PRECIO", "STOCK", "P. FINAL");
+        System.out.println("--------------------------------------------------------------------------------");
+
         for (Producto producto : productos) {
-            System.out.println(producto);
-            System.out.printf("Precio final: %.2f%n", producto.calcularPrecioFinal());
-            System.out.println();
+            System.out.printf("%-10s %-20s %-18s %-12.2f %-10d %-12.2f%n",
+                    producto.getCodigo(),
+                    producto.getNombre(),
+                    producto.getClass().getSimpleName(),
+                    producto.getPrecioBase(),
+                    producto.getStock(),
+                    producto.calcularPrecioFinal());
         }
+
+        System.out.println();
     }
 
     public void mostrarClientes(ArrayList<Cliente> clientes) {
+        System.out.println("===== CLIENTES =====");
+        System.out.printf("%-5s %-20s %-25s %-15s%n",
+                "ID", "NOMBRE", "EMAIL", "TELEFONO");
+        System.out.println("--------------------------------------------------------------------");
+
         for (Cliente cliente : clientes) {
-            System.out.println(cliente);
-            System.out.println();
+            System.out.printf("%-5d %-20s %-25s %-15s%n",
+                    cliente.getId(),
+                    cliente.getNombre(),
+                    cliente.getEmail(),
+                    cliente.getTelefono());
         }
+
+        System.out.println();
     }
 
     public void mostrarPedidos(ArrayList<Pedido> pedidos) {
+        System.out.println("===== PEDIDOS =====");
+        System.out.printf("%-5s %-20s %-15s %-15s %-12s%n",
+                "ID", "CLIENTE", "FECHA", "ESTADO", "TOTAL");
+        System.out.println("--------------------------------------------------------------------------");
+
         for (Pedido pedido : pedidos) {
-            System.out.println(pedido);
+            System.out.printf("%-5d %-20s %-15s %-15s %-12.2f%n",
+                    pedido.getId(),
+                    pedido.getCliente().getNombre(),
+                    pedido.getFecha(),
+                    pedido.getEstado(),
+                    pedido.calcularTotal());
+
             System.out.println();
+            System.out.println("Detalles del pedido:");
+            System.out.printf("%-5s %-20s %-10s %-15s %-12s%n",
+                    "ID", "PRODUCTO", "CANTIDAD", "P. UNITARIO", "SUBTOTAL");
+            System.out.println("----------------------------------------------------------------");
 
             for (DetallePedido detalle : pedido.getDetalles()) {
-                System.out.println(detalle);
-                System.out.println();
+                System.out.printf("%-5d %-20s %-10d %-15.2f %-12.2f%n",
+                        detalle.getId(),
+                        detalle.getProducto().getNombre(),
+                        detalle.getCantidad(),
+                        detalle.getPrecioUnitario(),
+                        detalle.calcularSubtotal());
             }
 
-            System.out.printf("Total del pedido: %.2f%n", pedido.calcularTotal());
             System.out.println();
         }
     }
 
     public void mostrarPermisos(ArrayList<Usuario> usuarios) {
-        System.out.println("Permisos del sistema:");
+        System.out.println("===== PERMISOS DEL SISTEMA =====");
+        System.out.printf("%-15s %-25s %-40s%n",
+                "USUARIO", "ROL", "PERMISO");
+        System.out.println("--------------------------------------------------------------------------------");
 
         for (Usuario usuario : usuarios) {
             if (usuario.esAdministrador()) {
-                System.out.println(usuario.getNombreUsuario() + " puede ver reportes.");
+                System.out.printf("%-15s %-25s %-40s%n",
+                        usuario.getNombreUsuario(),
+                        usuario.getRol(),
+                        "Puede ver reportes");
             }
 
             if (usuario.esGerenteInventario()) {
-                System.out.println(usuario.getNombreUsuario() + " puede gestionar productos e inventario.");
+                System.out.printf("%-15s %-25s %-40s%n",
+                        usuario.getNombreUsuario(),
+                        usuario.getRol(),
+                        "Puede gestionar productos e inventario");
             }
 
             if (usuario.esOperadorPedidos()) {
-                System.out.println(usuario.getNombreUsuario() + " puede gestionar pedidos.");
+                System.out.printf("%-15s %-25s %-40s%n",
+                        usuario.getNombreUsuario(),
+                        usuario.getRol(),
+                        "Puede gestionar pedidos");
             }
         }
 
@@ -67,13 +126,22 @@ public class SistemaController {
     }
 
     public void mostrarStock(ArrayList<Producto> productos) {
+        System.out.println("===== STOCK FINAL =====");
+        System.out.printf("%-10s %-20s %-18s %-10s%n",
+                "CODIGO", "PRODUCTO", "TIPO", "STOCK");
+        System.out.println("--------------------------------------------------------------");
+
         for (Producto producto : productos) {
-            System.out.println("Stock final " + producto.getNombre() + ": " + producto.getStock());
+            System.out.printf("%-10s %-20s %-18s %-10d%n",
+                    producto.getCodigo(),
+                    producto.getNombre(),
+                    producto.getClass().getSimpleName(),
+                    producto.getStock());
         }
 
         System.out.println();
     }
-    
+
     public Usuario login(ArrayList<Usuario> usuarios, String nombreUsuario, String password) {
         for (Usuario usuario : usuarios) {
             if (usuario.getNombreUsuario().equals(nombreUsuario)

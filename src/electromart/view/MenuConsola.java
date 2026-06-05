@@ -10,7 +10,13 @@ public class MenuConsola {
         System.out.println("4. Ver pedido");
         System.out.println("5. Ver permisos");
         System.out.println("6. Ver stock final");
+        System.out.println("7. Cerrar sesion");
         System.out.println("0. Salir");
         System.out.print("Seleccione una opcion: ");
+    }
+    public void pausar(java.util.Scanner sc) {
+        System.out.println("Presione ENTER para continuar...");
+        sc.nextLine();
+        sc.nextLine();
     }
 }
