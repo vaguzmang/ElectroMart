@@ -291,6 +291,23 @@ public class ElectroMart {
                             menu.pausar(sc);
                             break;
 
+                        case 12:
+                            if (usuarioActual.esAdministrador()) {
+                                System.out.println();
+                                controller.mostrarReportes(pedidos, productos, clientes);
+                            } else {
+                                System.out.println("No tiene permisos para ver reportes.");
+                                System.out.println();
+                            }
+                            menu.pausar(sc);
+                            break;
+
+                        case 13:
+                            System.out.println();
+                            controller.mostrarAcercaDelSistema();
+                            menu.pausar(sc);
+                            break;
+                            
                         case 99:
                             System.out.println("Sesion cerrada.");
                             System.out.println();

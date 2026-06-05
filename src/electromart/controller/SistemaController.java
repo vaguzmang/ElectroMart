@@ -333,6 +333,80 @@ public class SistemaController {
         System.out.println();
     }
     
+    public void mostrarReportes(ArrayList<Pedido> pedidos,
+            ArrayList<Producto> productos,
+            ArrayList<Cliente> clientes) {
+
+        double totalVentas = 0;
+
+        for (Pedido pedido : pedidos) {
+            totalVentas += pedido.calcularTotal();
+        }
+
+        int productosStockBajo = 0;
+
+        for (Producto producto : productos) {
+            if (producto.getStock() <= 3) {
+                productosStockBajo++;
+            }
+        }
+
+        System.out.println("===== REPORTES GENERALES =====");
+        System.out.printf("%-35s %-15s%n", "REPORTE", "VALOR");
+        System.out.println("--------------------------------------------------");
+        System.out.printf("%-35s %-15d%n", "Cantidad de pedidos", pedidos.size());
+        System.out.printf("%-35s %-15.2f%n", "Total ventas", totalVentas);
+        System.out.printf("%-35s %-15d%n", "Productos registrados", productos.size());
+        System.out.printf("%-35s %-15d%n", "Clientes registrados", clientes.size());
+        System.out.printf("%-35s %-15d%n", "Productos con stock bajo", productosStockBajo);
+        System.out.println();
+
+        System.out.println("===== PRODUCTOS CON STOCK BAJO =====");
+        System.out.printf("%-10s %-20s %-10s%n", "CODIGO", "PRODUCTO", "STOCK");
+        System.out.println("---------------------------------------------");
+
+        for (Producto producto : productos) {
+            if (producto.getStock() <= 3) {
+                System.out.printf("%-10s %-20s %-10d%n",
+                        producto.getCodigo(),
+                        producto.getNombre(),
+                        producto.getStock());
+            }
+        }
+
+        System.out.println();
+    }
+    
+    public void mostrarAcercaDelSistema() {
+        System.out.println("===== ACERCA DEL SISTEMA =====");
+        System.out.println("Nombre: ElectroMart");
+        System.out.println("Version: 1.0");
+        System.out.println("Lenguaje: Java 17");
+        System.out.println("Arquitectura: Modelo - Vista - Controlador");
+        System.out.println();
+        System.out.println("Descripcion:");
+        System.out.println("Sistema de gestion para una tienda de tecnologia y electrodomesticos.");
+        System.out.println("Permite administrar productos, clientes, pedidos, usuarios, roles,");
+        System.out.println("control de stock, calculo de totales y reportes basicos.");
+        System.out.println();
+        System.out.println("Modulos principales:");
+        System.out.println("- Gestion de usuarios y roles");
+        System.out.println("- Gestion de productos");
+        System.out.println("- Gestion de clientes");
+        System.out.println("- Gestion de pedidos");
+        System.out.println("- Reportes basicos");
+        System.out.println();
+    }
+    
+    public boolean esEnteroValido(Scanner sc) {
+        if (sc.hasNextInt()) {
+            return true;
+        }
+
+        sc.next();
+        return false;
+    }
+    
     public Usuario login(ArrayList<Usuario> usuarios, String nombreUsuario, String password) {
         for (Usuario usuario : usuarios) {
             if (usuario.getNombreUsuario().equals(nombreUsuario)
