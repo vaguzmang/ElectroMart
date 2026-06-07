@@ -1,10 +1,10 @@
 package electromart;
 
 import electromart.controller.SistemaController;
+import electromart.dao.ClienteDAO;
+import electromart.dao.ProductoDAO;
 import electromart.model.Cliente;
-import electromart.model.Computadora;
 import electromart.model.DetallePedido;
-import electromart.model.Electrodomestico;
 import electromart.model.EstadoPedido;
 import electromart.model.Pedido;
 import electromart.model.Producto;
@@ -13,7 +13,6 @@ import electromart.model.Usuario;
 import electromart.view.MenuConsola;
 import java.util.ArrayList;
 import java.util.Scanner;
-import electromart.dao.ProductoDAO;
 
 public class ElectroMart {
 
@@ -24,8 +23,10 @@ public class ElectroMart {
 
         MenuConsola menu = new MenuConsola();
         SistemaController controller = new SistemaController();
+
         ProductoDAO productoDAO = new ProductoDAO();
-        
+        ClienteDAO clienteDAO = new ClienteDAO();
+
         Usuario usuario1 = new Usuario();
         usuario1.setId(1);
         usuario1.setNombreUsuario("admin");
@@ -49,89 +50,40 @@ public class ElectroMart {
         usuarios.add(usuario2);
         usuarios.add(usuario3);
 
-        Computadora pc1 = new Computadora();
-        pc1.setCodigo("PC001");
-        pc1.setNombre("Asus Gamer");
-        pc1.setPrecioBase(3500);
-        pc1.setStock(5);
-        pc1.setProcesador("Intel i7");
-        pc1.setRamGB(16);
-
-        Electrodomestico nevera1 = new Electrodomestico();
-        nevera1.setCodigo("E001");
-        nevera1.setNombre("Nevera Samsung");
-        nevera1.setPrecioBase(2200);
-        nevera1.setStock(3);
-        nevera1.setConsumoEnergetico("A++");
-        nevera1.setGarantiaMeses(24);
-
-        Computadora pc2 = new Computadora();
-        pc2.setCodigo("PC002");
-        pc2.setNombre("Lenovo ThinkPad");
-        pc2.setPrecioBase(2800);
-        pc2.setStock(8);
-        pc2.setProcesador("AMD Ryzen 5");
-        pc2.setRamGB(16);
-
-        Computadora pc3 = new Computadora();
-        pc3.setCodigo("PC003");
-        pc3.setNombre("HP Pavilion");
-        pc3.setPrecioBase(2400);
-        pc3.setStock(6);
-        pc3.setProcesador("Intel i5");
-        pc3.setRamGB(8);
-
-        Electrodomestico lavadora1 = new Electrodomestico();
-        lavadora1.setCodigo("E002");
-        lavadora1.setNombre("Lavadora LG");
-        lavadora1.setPrecioBase(1800);
-        lavadora1.setStock(4);
-        lavadora1.setConsumoEnergetico("A+");
-        lavadora1.setGarantiaMeses(24);
-
-        Electrodomestico tv1 = new Electrodomestico();
-        tv1.setCodigo("E003");
-        tv1.setNombre("TV Samsung 55");
-        tv1.setPrecioBase(2600);
-        tv1.setStock(7);
-        tv1.setConsumoEnergetico("A");
-        tv1.setGarantiaMeses(12);
-
         ArrayList<Producto> productos = productoDAO.listarProductos();
-
-        Cliente cliente1 = new Cliente();
-        cliente1.setId(1);
-        cliente1.setNombre("Carlos Perez");
-        cliente1.setEmail("carlos@email.com");
-        cliente1.setTelefono("3001234567");
-
-        ArrayList<Cliente> clientes = new ArrayList<>();
-        clientes.add(cliente1);
-
-        Pedido pedido1 = new Pedido();
-        pedido1.setId(1);
-        pedido1.setCliente(cliente1);
-        pedido1.setFecha("2026-05-28");
-        pedido1.setEstado(EstadoPedido.PENDIENTE);
-
-        DetallePedido detalle1 = new DetallePedido();
-        detalle1.setId(1);
-        detalle1.setProducto(pc1);
-        detalle1.setCantidad(1);
-        detalle1.setPrecioUnitario(pc1.getPrecioBase());
-
-        pedido1.agregarDetalle(detalle1);
-
-        DetallePedido detalle2 = new DetallePedido();
-        detalle2.setId(2);
-        detalle2.setProducto(nevera1);
-        detalle2.setCantidad(1);
-        detalle2.setPrecioUnitario(nevera1.getPrecioBase());
-
-        pedido1.agregarDetalle(detalle2);
+        ArrayList<Cliente> clientes = clienteDAO.listarClientes();
 
         ArrayList<Pedido> pedidos = new ArrayList<>();
-        pedidos.add(pedido1);
+
+        if (!clientes.isEmpty() && productos.size() >= 26) {
+            Cliente cliente1 = clientes.get(0);
+            Producto producto1 = productos.get(0);
+            Producto producto2 = productos.get(25);
+
+            Pedido pedido1 = new Pedido();
+            pedido1.setId(1);
+            pedido1.setCliente(cliente1);
+            pedido1.setFecha("2026-05-28");
+            pedido1.setEstado(EstadoPedido.PENDIENTE);
+
+            DetallePedido detalle1 = new DetallePedido();
+            detalle1.setId(1);
+            detalle1.setProducto(producto1);
+            detalle1.setCantidad(1);
+            detalle1.setPrecioUnitario(producto1.getPrecioBase());
+
+            pedido1.agregarDetalle(detalle1);
+
+            DetallePedido detalle2 = new DetallePedido();
+            detalle2.setId(2);
+            detalle2.setProducto(producto2);
+            detalle2.setCantidad(1);
+            detalle2.setPrecioUnitario(producto2.getPrecioBase());
+
+            pedido1.agregarDetalle(detalle2);
+
+            pedidos.add(pedido1);
+        }
 
         boolean salirSistema = false;
 
@@ -275,7 +227,7 @@ public class ElectroMart {
                             }
                             menu.pausar(sc);
                             break;
-                                    
+
                         case 11:
                             if (usuarioActual.esAdministrador() || usuarioActual.esOperadorPedidos()) {
                                 System.out.println();
@@ -303,7 +255,7 @@ public class ElectroMart {
                             controller.mostrarAcercaDelSistema();
                             menu.pausar(sc);
                             break;
-                            
+
                         case 99:
                             System.out.println("Sesion cerrada.");
                             System.out.println();
@@ -320,6 +272,7 @@ public class ElectroMart {
                             menu.pausar(sc);
                             break;
                     }
+
                 } while (opcion != 0 && opcion != 99);
             }
         }
