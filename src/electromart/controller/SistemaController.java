@@ -4,12 +4,12 @@ import electromart.model.Cliente;
 import electromart.model.Computadora;
 import electromart.model.DetallePedido;
 import electromart.model.Electrodomestico;
+import electromart.model.EstadoPedido;
 import electromart.model.Pedido;
 import electromart.model.Producto;
 import electromart.model.Usuario;
 import java.util.ArrayList;
 import java.util.Scanner;
-import electromart.model.EstadoPedido;
 
 public class SistemaController {
 
@@ -160,7 +160,6 @@ public class SistemaController {
         computadora.setNombre(sc.nextLine());
 
         computadora.setPrecioBase(leerDoublePositivo(sc, "Precio base: "));
-        
         computadora.setStock(leerEnteroPositivo(sc, "Stock: "));
 
         sc.nextLine();
@@ -214,7 +213,6 @@ public class SistemaController {
         electrodomestico.setNombre(sc.nextLine());
 
         electrodomestico.setPrecioBase(leerDoublePositivo(sc, "Precio base: "));
-        
         electrodomestico.setStock(leerEnteroPositivo(sc, "Stock: "));
 
         sc.nextLine();
@@ -294,11 +292,6 @@ public class SistemaController {
 
         int cantidad = leerEnteroPositivo(sc, "Ingrese cantidad: ");
 
-        if (cantidad <= 0) {
-            System.out.println("La cantidad debe ser mayor que cero.");
-            return;
-        }
-
         if (cantidad > producto.getStock()) {
             System.out.println("Stock insuficiente para el producto: " + producto.getNombre());
             return;
@@ -323,7 +316,7 @@ public class SistemaController {
         System.out.printf("Total del pedido: %.2f%n", pedido.calcularTotal());
         System.out.println();
     }
-    
+
     public void mostrarReportes(ArrayList<Pedido> pedidos,
             ArrayList<Producto> productos,
             ArrayList<Cliente> clientes) {
@@ -367,7 +360,7 @@ public class SistemaController {
 
         System.out.println();
     }
-    
+
     public void mostrarAcercaDelSistema() {
         System.out.println("===== ACERCA DEL SISTEMA =====");
         System.out.println("Nombre: ElectroMart");
@@ -388,7 +381,7 @@ public class SistemaController {
         System.out.println("- Reportes basicos");
         System.out.println();
     }
-    
+
     public boolean esEnteroValido(Scanner sc) {
         if (sc.hasNextInt()) {
             return true;
@@ -397,7 +390,7 @@ public class SistemaController {
         sc.next();
         return false;
     }
-    
+
     public int leerEntero(Scanner sc, String mensaje) {
         while (true) {
             System.out.print(mensaje);
@@ -455,6 +448,7 @@ public class SistemaController {
 
         return valor;
     }
+
     public Usuario login(ArrayList<Usuario> usuarios, String nombreUsuario, String password) {
         for (Usuario usuario : usuarios) {
             if (usuario.getNombreUsuario().equals(nombreUsuario)
