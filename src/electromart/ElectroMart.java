@@ -13,6 +13,7 @@ import electromart.model.Usuario;
 import electromart.view.MenuConsola;
 import java.util.ArrayList;
 import java.util.Scanner;
+import electromart.dao.ProductoDAO;
 
 public class ElectroMart {
 
@@ -23,7 +24,8 @@ public class ElectroMart {
 
         MenuConsola menu = new MenuConsola();
         SistemaController controller = new SistemaController();
-
+        ProductoDAO productoDAO = new ProductoDAO();
+        
         Usuario usuario1 = new Usuario();
         usuario1.setId(1);
         usuario1.setNombreUsuario("admin");
@@ -95,13 +97,7 @@ public class ElectroMart {
         tv1.setConsumoEnergetico("A");
         tv1.setGarantiaMeses(12);
 
-        ArrayList<Producto> productos = new ArrayList<>();
-        productos.add(pc1);
-        productos.add(nevera1);
-        productos.add(pc2);
-        productos.add(pc3);
-        productos.add(lavadora1);
-        productos.add(tv1);
+        ArrayList<Producto> productos = productoDAO.listarProductos();
 
         Cliente cliente1 = new Cliente();
         cliente1.setId(1);
