@@ -279,3 +279,112 @@ ElectroMart.java
 
 Proyecto desarrollado por Ing. Vitor A. Guzman G. como ejercicio académico para aplicar Programación Orientada a Objetos, Java 17, MVC básico, control 
 de stock, manejo de pedidos y preparación para integración con base de datos.
+
+## Base de datos
+
+El proyecto incluye integración con base de datos MySQL/MariaDB usando JDBC.
+
+La base de datos está definida en la carpeta:
+
+```text
+database
+```
+
+Archivos incluidos:
+
+```text
+schema.sql
+data.sql
+```
+
+### schema.sql
+
+Este archivo crea la base de datos `electromart_db` y sus tablas principales:
+
+* roles
+* usuarios
+* clientes
+* productos
+* pedidos
+* detalle_pedido
+
+### data.sql
+
+Este archivo carga datos iniciales para pruebas:
+
+* 3 roles principales
+* 50 usuarios
+* 50 clientes
+* 50 productos
+* 50 pedidos
+* 50 detalles de pedido
+
+Los roles principales del sistema son:
+
+* ADMINISTRADOR
+* GERENTE_INVENTARIO
+* OPERADOR_PEDIDOS
+
+### Conexión JDBC
+
+La conexión a la base de datos se maneja desde la clase:
+
+```text
+electromart.config.ConexionBD
+```
+
+Configuración usada en entorno local con XAMPP/phpMyAdmin:
+
+```text
+URL: jdbc:mysql://localhost:3306/electromart_db
+Usuario: root
+Password: vacío
+```
+
+### DAO implementados
+
+El proyecto incluye clases DAO para separar el acceso a datos:
+
+```text
+electromart.dao.ProductoDAO
+electromart.dao.ClienteDAO
+electromart.dao.UsuarioDAO
+electromart.dao.PedidoDAO
+```
+
+Estas clases consultan la base de datos y convierten los registros en objetos Java del modelo.
+
+### Integración actual con MySQL
+
+Actualmente el sistema carga desde MySQL:
+
+* usuarios
+* productos
+* clientes
+* pedidos
+* detalles de pedidos
+
+El login utiliza usuarios cargados desde la base de datos.
+
+Las opciones de consulta del menú muestran información obtenida desde MySQL.
+
+Las operaciones de registro desde consola todavía pueden trabajar principalmente en memoria, pero el proyecto ya cuenta con la estructura necesaria para extender los DAO y guardar nuevos registros directamente en MySQL.
+
+### Ejecución de scripts SQL
+
+Para preparar la base de datos se deben ejecutar los archivos en este orden:
+
+```text
+1. database/schema.sql
+2. database/data.sql
+```
+
+Primero se crea la estructura de tablas y luego se insertan los datos iniciales.
+
+### Requisitos para base de datos
+
+* XAMPP instalado
+* Apache iniciado
+* MySQL iniciado
+* phpMyAdmin disponible en `http://localhost/phpmyadmin`
+* MySQL Connector/J agregado a las librerías del proyecto
