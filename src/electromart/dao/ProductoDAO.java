@@ -57,4 +57,82 @@ public class ProductoDAO {
 
         return productos;
     }
+
+    public boolean insertarComputadora(Computadora computadora) {
+        String sql = """
+                     INSERT INTO productos (
+                         codigo,
+                         nombre,
+                         tipo,
+                         precio_base,
+                         stock,
+                         procesador,
+                         ram_gb,
+                         consumo_energetico,
+                         garantia_meses
+                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                     """;
+
+        try (Connection conexion = ConexionBD.obtenerConexion();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+            ps.setString(1, computadora.getCodigo());
+            ps.setString(2, computadora.getNombre());
+            ps.setString(3, "COMPUTADORA");
+            ps.setDouble(4, computadora.getPrecioBase());
+            ps.setInt(5, computadora.getStock());
+            ps.setString(6, computadora.getProcesador());
+            ps.setInt(7, computadora.getRamGB());
+            ps.setString(8, null);
+            ps.setObject(9, null);
+
+            int filasInsertadas = ps.executeUpdate();
+
+            return filasInsertadas > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Error al insertar computadora en la base de datos.");
+            System.out.println("Detalle: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean insertarElectrodomestico(Electrodomestico electrodomestico) {
+        String sql = """
+                     INSERT INTO productos (
+                         codigo,
+                         nombre,
+                         tipo,
+                         precio_base,
+                         stock,
+                         procesador,
+                         ram_gb,
+                         consumo_energetico,
+                         garantia_meses
+                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                     """;
+
+        try (Connection conexion = ConexionBD.obtenerConexion();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+            ps.setString(1, electrodomestico.getCodigo());
+            ps.setString(2, electrodomestico.getNombre());
+            ps.setString(3, "ELECTRODOMESTICO");
+            ps.setDouble(4, electrodomestico.getPrecioBase());
+            ps.setInt(5, electrodomestico.getStock());
+            ps.setString(6, null);
+            ps.setObject(7, null);
+            ps.setString(8, electrodomestico.getConsumoEnergetico());
+            ps.setInt(9, electrodomestico.getGarantiaMeses());
+
+            int filasInsertadas = ps.executeUpdate();
+
+            return filasInsertadas > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Error al insertar electrodomestico en la base de datos.");
+            System.out.println("Detalle: " + e.getMessage());
+            return false;
+        }
+    }
 }

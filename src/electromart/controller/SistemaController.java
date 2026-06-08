@@ -1,6 +1,7 @@
 package electromart.controller;
 
 import electromart.dao.ClienteDAO;
+import electromart.dao.ProductoDAO;
 import electromart.model.Cliente;
 import electromart.model.Computadora;
 import electromart.model.DetallePedido;
@@ -170,9 +171,17 @@ public class SistemaController {
 
         computadora.setRamGB(leerEnteroPositivo(sc, "RAM GB: "));
 
-        productos.add(computadora);
+        ProductoDAO productoDAO = new ProductoDAO();
 
-        System.out.println("Computadora registrada correctamente.");
+        if (productoDAO.insertarComputadora(computadora)) {
+            System.out.println("Computadora registrada correctamente en la base de datos.");
+
+            productos.clear();
+            productos.addAll(productoDAO.listarProductos());
+        } else {
+            System.out.println("No se pudo registrar la computadora.");
+        }
+
         System.out.println();
     }
 
@@ -229,9 +238,17 @@ public class SistemaController {
 
         electrodomestico.setGarantiaMeses(leerEnteroPositivo(sc, "Garantia en meses: "));
 
-        productos.add(electrodomestico);
+        ProductoDAO productoDAO = new ProductoDAO();
 
-        System.out.println("Electrodomestico registrado correctamente.");
+        if (productoDAO.insertarElectrodomestico(electrodomestico)) {
+            System.out.println("Electrodomestico registrado correctamente en la base de datos.");
+
+            productos.clear();
+            productos.addAll(productoDAO.listarProductos());
+        } else {
+            System.out.println("No se pudo registrar el electrodomestico.");
+        }
+
         System.out.println();
     }
 
