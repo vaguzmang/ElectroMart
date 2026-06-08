@@ -13,6 +13,7 @@ import electromart.model.Usuario;
 import electromart.view.MenuConsola;
 import java.util.ArrayList;
 import java.util.Scanner;
+import electromart.dao.UsuarioDAO;
 
 public class ElectroMart {
 
