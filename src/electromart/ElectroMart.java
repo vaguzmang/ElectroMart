@@ -2,18 +2,16 @@ package electromart;
 
 import electromart.controller.SistemaController;
 import electromart.dao.ClienteDAO;
+import electromart.dao.PedidoDAO;
 import electromart.dao.ProductoDAO;
+import electromart.dao.UsuarioDAO;
 import electromart.model.Cliente;
-import electromart.model.DetallePedido;
-import electromart.model.EstadoPedido;
 import electromart.model.Pedido;
 import electromart.model.Producto;
-import electromart.model.Rol;
 import electromart.model.Usuario;
 import electromart.view.MenuConsola;
 import java.util.ArrayList;
 import java.util.Scanner;
-import electromart.dao.UsuarioDAO;
 
 public class ElectroMart {
 
@@ -25,66 +23,15 @@ public class ElectroMart {
         MenuConsola menu = new MenuConsola();
         SistemaController controller = new SistemaController();
 
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
         ProductoDAO productoDAO = new ProductoDAO();
         ClienteDAO clienteDAO = new ClienteDAO();
+        PedidoDAO pedidoDAO = new PedidoDAO();
 
-        Usuario usuario1 = new Usuario();
-        usuario1.setId(1);
-        usuario1.setNombreUsuario("admin");
-        usuario1.setPassword("1234");
-        usuario1.setRol(Rol.ADMINISTRADOR);
-
-        Usuario usuario2 = new Usuario();
-        usuario2.setId(2);
-        usuario2.setNombreUsuario("inventario");
-        usuario2.setPassword("1234");
-        usuario2.setRol(Rol.GERENTE_INVENTARIO);
-
-        Usuario usuario3 = new Usuario();
-        usuario3.setId(3);
-        usuario3.setNombreUsuario("pedidos");
-        usuario3.setPassword("1234");
-        usuario3.setRol(Rol.OPERADOR_PEDIDOS);
-
-        ArrayList<Usuario> usuarios = new ArrayList<>();
-        usuarios.add(usuario1);
-        usuarios.add(usuario2);
-        usuarios.add(usuario3);
-
+        ArrayList<Usuario> usuarios = usuarioDAO.listarUsuarios();
         ArrayList<Producto> productos = productoDAO.listarProductos();
         ArrayList<Cliente> clientes = clienteDAO.listarClientes();
-
-        ArrayList<Pedido> pedidos = new ArrayList<>();
-
-        if (!clientes.isEmpty() && productos.size() >= 26) {
-            Cliente cliente1 = clientes.get(0);
-            Producto producto1 = productos.get(0);
-            Producto producto2 = productos.get(25);
-
-            Pedido pedido1 = new Pedido();
-            pedido1.setId(1);
-            pedido1.setCliente(cliente1);
-            pedido1.setFecha("2026-05-28");
-            pedido1.setEstado(EstadoPedido.PENDIENTE);
-
-            DetallePedido detalle1 = new DetallePedido();
-            detalle1.setId(1);
-            detalle1.setProducto(producto1);
-            detalle1.setCantidad(1);
-            detalle1.setPrecioUnitario(producto1.getPrecioBase());
-
-            pedido1.agregarDetalle(detalle1);
-
-            DetallePedido detalle2 = new DetallePedido();
-            detalle2.setId(2);
-            detalle2.setProducto(producto2);
-            detalle2.setCantidad(1);
-            detalle2.setPrecioUnitario(producto2.getPrecioBase());
-
-            pedido1.agregarDetalle(detalle2);
-
-            pedidos.add(pedido1);
-        }
+        ArrayList<Pedido> pedidos = pedidoDAO.listarPedidos();
 
         boolean salirSistema = false;
 

@@ -1,5 +1,6 @@
 package electromart.controller;
 
+import electromart.dao.ClienteDAO;
 import electromart.model.Cliente;
 import electromart.model.Computadora;
 import electromart.model.DetallePedido;
@@ -180,8 +181,6 @@ public class SistemaController {
 
         System.out.println("===== REGISTRAR CLIENTE =====");
 
-        cliente.setId(leerEnteroPositivo(sc, "ID: "));
-
         sc.nextLine();
 
         System.out.print("Nombre: ");
@@ -193,9 +192,17 @@ public class SistemaController {
         System.out.print("Telefono: ");
         cliente.setTelefono(sc.nextLine());
 
-        clientes.add(cliente);
+        ClienteDAO clienteDAO = new ClienteDAO();
 
-        System.out.println("Cliente registrado correctamente.");
+        if (clienteDAO.insertarCliente(cliente)) {
+            System.out.println("Cliente registrado correctamente en la base de datos.");
+
+            clientes.clear();
+            clientes.addAll(clienteDAO.listarClientes());
+        } else {
+            System.out.println("No se pudo registrar el cliente.");
+        }
+
         System.out.println();
     }
 

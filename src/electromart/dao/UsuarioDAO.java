@@ -18,6 +18,7 @@ public class UsuarioDAO {
                      SELECT u.id, u.nombre_usuario, u.password, r.nombre AS rol
                      FROM usuarios u
                      INNER JOIN roles r ON u.rol_id = r.id
+                     ORDER BY u.id
                      """;
 
         try (Connection conexion = ConexionBD.obtenerConexion();
