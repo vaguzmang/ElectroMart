@@ -12,6 +12,8 @@ import electromart.model.Producto;
 import electromart.model.Usuario;
 import java.util.ArrayList;
 import java.util.Scanner;
+import electromart.dao.PedidoDAO;
+import electromart.dao.ProductoDAO;
 
 public class SistemaController {
 

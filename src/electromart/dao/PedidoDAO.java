@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 public class PedidoDAO {
@@ -112,6 +113,104 @@ public class PedidoDAO {
         }
 
         return detalles;
+    }
+
+    public boolean insertarPedido(Pedido pedido) {
+        String sqlPedido = "INSERT INTO pedidos (cliente_id, fecha, estado) VALUES (?, ?, ?)";
+        String sqlDetalle = """
+                            INSERT INTO detalle_pedido (
+                                pedido_id,
+                                producto_id,
+                                cantidad,
+                                precio_unitario,
+                                subtotal
+                            ) VALUES (?, ?, ?, ?, ?)
+                            """;
+        String sqlActualizarStock = "UPDATE productos SET stock = stock - ? WHERE id = ?";
+
+        try (Connection conexion = ConexionBD.obtenerConexion()) {
+            conexion.setAutoCommit(false);
+
+            try (PreparedStatement psPedido = conexion.prepareStatement(sqlPedido, Statement.RETURN_GENERATED_KEYS)) {
+                psPedido.setInt(1, pedido.getCliente().getId());
+                psPedido.setString(2, pedido.getFecha());
+                psPedido.setString(3, pedido.getEstado().name());
+
+                int filasPedido = psPedido.executeUpdate();
+
+                if (filasPedido == 0) {
+                    conexion.rollback();
+                    return false;
+                }
+
+                int pedidoId;
+
+                try (ResultSet generatedKeys = psPedido.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        pedidoId = generatedKeys.getInt(1);
+                    } else {
+                        conexion.rollback();
+                        return false;
+                    }
+                }
+
+                for (DetallePedido detalle : pedido.getDetalles()) {
+                    int productoId = buscarProductoIdPorCodigo(conexion, detalle.getProducto().getCodigo());
+
+                    if (productoId == 0) {
+                        conexion.rollback();
+                        return false;
+                    }
+
+                    try (PreparedStatement psDetalle = conexion.prepareStatement(sqlDetalle)) {
+                        psDetalle.setInt(1, pedidoId);
+                        psDetalle.setInt(2, productoId);
+                        psDetalle.setInt(3, detalle.getCantidad());
+                        psDetalle.setDouble(4, detalle.getPrecioUnitario());
+                        psDetalle.setDouble(5, detalle.calcularSubtotal());
+                        psDetalle.executeUpdate();
+                    }
+
+                    try (PreparedStatement psStock = conexion.prepareStatement(sqlActualizarStock)) {
+                        psStock.setInt(1, detalle.getCantidad());
+                        psStock.setInt(2, productoId);
+                        psStock.executeUpdate();
+                    }
+                }
+
+                conexion.commit();
+                return true;
+
+            } catch (SQLException e) {
+                conexion.rollback();
+                System.out.println("Error al insertar pedido en la base de datos.");
+                System.out.println("Detalle: " + e.getMessage());
+                return false;
+            } finally {
+                conexion.setAutoCommit(true);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error de conexion al insertar pedido.");
+            System.out.println("Detalle: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private int buscarProductoIdPorCodigo(Connection conexion, String codigo) throws SQLException {
+        String sql = "SELECT id FROM productos WHERE codigo = ?";
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setString(1, codigo);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("id");
+                }
+            }
+        }
+
+        return 0;
     }
 
     private Producto crearProductoDesdeResultSet(ResultSet rs) throws SQLException {
