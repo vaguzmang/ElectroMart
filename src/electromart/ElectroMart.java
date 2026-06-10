@@ -204,6 +204,50 @@ public class ElectroMart {
                             menu.pausar(sc);
                             break;
 
+                        case 14:
+                            if (usuarioActual.esAdministrador()) {
+                                System.out.println();
+                                controller.registrarUsuario(usuarios, sc);
+                            } else {
+                                System.out.println("No tiene permisos para registrar usuarios.");
+                                System.out.println();
+                            }
+                            menu.pausar(sc);
+                            break;
+
+                        case 15:
+                            if (usuarioActual.esAdministrador()) {
+                                System.out.println();
+                                controller.buscarUsuariosPorRol(usuarios, sc);
+                            } else {
+                                System.out.println("No tiene permisos para buscar usuarios por rol.");
+                                System.out.println();
+                            }
+                            menu.pausar(sc);
+                            break;
+
+                        case 16:
+                            if (usuarioActual.esAdministrador()) {
+                                System.out.println();
+                                controller.editarUsuario(usuarios, sc);
+                            } else {
+                                System.out.println("No tiene permisos para editar usuarios.");
+                                System.out.println();
+                            }
+                            menu.pausar(sc);
+                            break;
+
+                        case 17:
+                            if (usuarioActual.esAdministrador()) {
+                                System.out.println();
+                                controller.eliminarUsuario(usuarios, sc);
+                            } else {
+                                System.out.println("No tiene permisos para eliminar usuarios.");
+                                System.out.println();
+                            }
+                            menu.pausar(sc);
+                            break;
+
                         case 99:
                             System.out.println("Sesion cerrada.");
                             System.out.println();

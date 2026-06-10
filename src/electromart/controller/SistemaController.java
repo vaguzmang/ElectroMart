@@ -1,7 +1,8 @@
-package electromart.controller;
+ package electromart.controller;
 
 import electromart.dao.ClienteDAO;
 import electromart.dao.ProductoDAO;
+import electromart.dao.UsuarioDAO;
 import electromart.model.Cliente;
 import electromart.model.Computadora;
 import electromart.model.DetallePedido;
@@ -9,11 +10,11 @@ import electromart.model.Electrodomestico;
 import electromart.model.EstadoPedido;
 import electromart.model.Pedido;
 import electromart.model.Producto;
+import electromart.model.Rol;
 import electromart.model.Usuario;
 import java.util.ArrayList;
 import java.util.Scanner;
 import electromart.dao.PedidoDAO;
-import electromart.dao.ProductoDAO;
 
 public class SistemaController {
 
@@ -341,6 +342,187 @@ public class SistemaController {
         System.out.println("Pedido creado correctamente.");
         System.out.printf("Total del pedido: %.2f%n", pedido.calcularTotal());
         System.out.println();
+    }
+
+
+    public void registrarUsuario(ArrayList<Usuario> usuarios, Scanner sc) {
+        System.out.println("===== REGISTRAR USUARIO =====");
+
+        System.out.print("Nombre de usuario: ");
+        String nombreUsuario = sc.next();
+
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
+
+        if (usuarioDAO.existeNombreUsuario(nombreUsuario)) {
+            System.out.println("Ya existe un usuario con ese nombre.");
+            System.out.println();
+            return;
+        }
+
+        System.out.print("Password: ");
+        String password = sc.next();
+
+        Rol rol = seleccionarRol(sc);
+
+        if (rol == null) {
+            System.out.println("Rol no valido.");
+            System.out.println();
+            return;
+        }
+
+        Usuario usuario = new Usuario();
+        usuario.setNombreUsuario(nombreUsuario);
+        usuario.setPassword(password);
+        usuario.setRol(rol);
+
+        if (usuarioDAO.insertarUsuario(usuario)) {
+            System.out.println("Usuario registrado correctamente en la base de datos.");
+            usuarios.clear();
+            usuarios.addAll(usuarioDAO.listarUsuarios());
+        } else {
+            System.out.println("No se pudo registrar el usuario.");
+        }
+
+        System.out.println();
+    }
+
+    public void buscarUsuariosPorRol(ArrayList<Usuario> usuarios, Scanner sc) {
+        System.out.println("===== BUSCAR USUARIOS POR ROL =====");
+
+        Rol rol = seleccionarRol(sc);
+
+        if (rol == null) {
+            System.out.println("Rol no valido.");
+            System.out.println();
+            return;
+        }
+
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
+        ArrayList<Usuario> usuariosFiltrados = usuarioDAO.listarUsuariosPorRol(rol);
+
+        if (usuariosFiltrados.isEmpty()) {
+            System.out.println("No hay usuarios registrados con ese rol.");
+            System.out.println();
+            return;
+        }
+
+        mostrarUsuarios(usuariosFiltrados);
+    }
+
+    public void editarUsuario(ArrayList<Usuario> usuarios, Scanner sc) {
+        System.out.println("===== EDITAR USUARIO =====");
+        mostrarUsuarios(usuarios);
+
+        int id = leerEnteroPositivo(sc, "Ingrese ID del usuario a editar: ");
+        Usuario usuario = buscarUsuarioPorId(usuarios, id);
+
+        if (usuario == null) {
+            System.out.println("Usuario no encontrado.");
+            System.out.println();
+            return;
+        }
+
+        System.out.println("Usuario actual: " + usuario.getNombreUsuario());
+        System.out.print("Nuevo nombre de usuario: ");
+        String nuevoNombre = sc.next();
+
+        System.out.print("Nuevo password: ");
+        String nuevoPassword = sc.next();
+
+        Rol nuevoRol = seleccionarRol(sc);
+
+        if (nuevoRol == null) {
+            System.out.println("Rol no valido.");
+            System.out.println();
+            return;
+        }
+
+        usuario.setNombreUsuario(nuevoNombre);
+        usuario.setPassword(nuevoPassword);
+        usuario.setRol(nuevoRol);
+
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
+
+        if (usuarioDAO.actualizarUsuario(usuario)) {
+            System.out.println("Usuario actualizado correctamente.");
+            usuarios.clear();
+            usuarios.addAll(usuarioDAO.listarUsuarios());
+        } else {
+            System.out.println("No se pudo actualizar el usuario.");
+        }
+
+        System.out.println();
+    }
+
+    public void eliminarUsuario(ArrayList<Usuario> usuarios, Scanner sc) {
+        System.out.println("===== ELIMINAR USUARIO =====");
+        mostrarUsuarios(usuarios);
+
+        int id = leerEnteroPositivo(sc, "Ingrese ID del usuario a eliminar: ");
+        Usuario usuario = buscarUsuarioPorId(usuarios, id);
+
+        if (usuario == null) {
+            System.out.println("Usuario no encontrado.");
+            System.out.println();
+            return;
+        }
+
+        if (usuario.getNombreUsuario().equalsIgnoreCase("admin")) {
+            System.out.println("No se recomienda eliminar el usuario administrador principal.");
+            System.out.println();
+            return;
+        }
+
+        System.out.print("Confirme eliminacion escribiendo SI: ");
+        String confirmacion = sc.next();
+
+        if (!confirmacion.equalsIgnoreCase("SI")) {
+            System.out.println("Eliminacion cancelada.");
+            System.out.println();
+            return;
+        }
+
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
+
+        if (usuarioDAO.eliminarUsuario(id)) {
+            System.out.println("Usuario eliminado correctamente.");
+            usuarios.clear();
+            usuarios.addAll(usuarioDAO.listarUsuarios());
+        } else {
+            System.out.println("No se pudo eliminar el usuario.");
+        }
+
+        System.out.println();
+    }
+
+    public Usuario buscarUsuarioPorId(ArrayList<Usuario> usuarios, int id) {
+        for (Usuario usuario : usuarios) {
+            if (usuario.getId() == id) {
+                return usuario;
+            }
+        }
+
+        return null;
+    }
+
+    public Rol seleccionarRol(Scanner sc) {
+        System.out.println("Seleccione rol:");
+        System.out.println("1. ADMINISTRADOR");
+        System.out.println("2. GERENTE_INVENTARIO");
+        System.out.println("3. OPERADOR_PEDIDOS");
+
+        int opcionRol = leerEnteroPositivo(sc, "Opcion: ");
+
+        switch (opcionRol) {
+            case 1:
+                return Rol.ADMINISTRADOR;
+            case 2:
+                return Rol.GERENTE_INVENTARIO;
+            case 3:
+                return Rol.OPERADOR_PEDIDOS;
+            default:
+                return null;
+        }
     }
 
     public void mostrarReportes(ArrayList<Pedido> pedidos,
