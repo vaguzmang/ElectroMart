@@ -13,21 +13,14 @@ public class ClienteDAO {
     public ArrayList<Cliente> listarClientes() {
         ArrayList<Cliente> clientes = new ArrayList<>();
 
-        String sql = "SELECT * FROM clientes";
+        String sql = "SELECT * FROM clientes ORDER BY id";
 
         try (Connection conexion = ConexionBD.obtenerConexion();
              PreparedStatement ps = conexion.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                Cliente cliente = new Cliente();
-
-                cliente.setId(rs.getInt("id"));
-                cliente.setNombre(rs.getString("nombre"));
-                cliente.setEmail(rs.getString("email"));
-                cliente.setTelefono(rs.getString("telefono"));
-
-                clientes.add(cliente);
+                clientes.add(crearClienteDesdeResultSet(rs));
             }
 
         } catch (SQLException e) {
@@ -49,7 +42,6 @@ public class ClienteDAO {
             ps.setString(3, cliente.getTelefono());
 
             int filasInsertadas = ps.executeUpdate();
-
             return filasInsertadas > 0;
 
         } catch (SQLException e) {
@@ -57,5 +49,36 @@ public class ClienteDAO {
             System.out.println("Detalle: " + e.getMessage());
             return false;
         }
+    }
+
+    public Cliente buscarClientePorEmail(String email) {
+        String sql = "SELECT * FROM clientes WHERE email = ?";
+
+        try (Connection conexion = ConexionBD.obtenerConexion();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+            ps.setString(1, email);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return crearClienteDesdeResultSet(rs);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al buscar cliente en la base de datos.");
+            System.out.println("Detalle: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    private Cliente crearClienteDesdeResultSet(ResultSet rs) throws SQLException {
+        Cliente cliente = new Cliente();
+        cliente.setId(rs.getInt("id"));
+        cliente.setNombre(rs.getString("nombre"));
+        cliente.setEmail(rs.getString("email"));
+        cliente.setTelefono(rs.getString("telefono"));
+        return cliente;
     }
 }

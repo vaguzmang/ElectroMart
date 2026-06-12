@@ -1,8 +1,7 @@
- package electromart.controller;
+package electromart.controller;
 
 import electromart.dao.ClienteDAO;
 import electromart.dao.ProductoDAO;
-import electromart.dao.UsuarioDAO;
 import electromart.model.Cliente;
 import electromart.model.Computadora;
 import electromart.model.DetallePedido;
@@ -10,10 +9,11 @@ import electromart.model.Electrodomestico;
 import electromart.model.EstadoPedido;
 import electromart.model.Pedido;
 import electromart.model.Producto;
-import electromart.model.Rol;
 import electromart.model.Usuario;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 import electromart.dao.PedidoDAO;
 
 public class SistemaController {
@@ -345,184 +345,235 @@ public class SistemaController {
     }
 
 
-    public void registrarUsuario(ArrayList<Usuario> usuarios, Scanner sc) {
-        System.out.println("===== REGISTRAR USUARIO =====");
+    public void busquedaAvanzadaProductos(ArrayList<Producto> productos, Scanner sc) {
+        sc.nextLine();
 
-        System.out.print("Nombre de usuario: ");
-        String nombreUsuario = sc.next();
+        boolean repetirBusqueda = true;
 
-        UsuarioDAO usuarioDAO = new UsuarioDAO();
+        while (repetirBusqueda) {
+            if (productos.isEmpty()) {
+                System.out.println("No hay productos registrados en el inventario.");
+                return;
+            }
 
-        if (usuarioDAO.existeNombreUsuario(nombreUsuario)) {
-            System.out.println("Ya existe un usuario con ese nombre.");
+            String categoria = solicitarCategoriaProducto(productos, sc);
+            if (categoria == null) {
+                return;
+            }
+
+            Double precioMinimo = solicitarPrecio(sc, "Ingrese precio minimo: ");
+            if (precioMinimo == null) {
+                continue;
+            }
+
+            Double precioMaximo = solicitarPrecioMaximo(sc, precioMinimo);
+            if (precioMaximo == null) {
+                continue;
+            }
+
+            List<Producto> productosFiltrados = productos.stream()
+                    .filter(producto -> obtenerCategoriaProducto(producto).equalsIgnoreCase(categoria))
+                    .filter(producto -> producto.getPrecioBase() >= precioMinimo)
+                    .filter(producto -> producto.getPrecioBase() <= precioMaximo)
+                    .collect(Collectors.toList());
+
             System.out.println();
-            return;
-        }
-
-        System.out.print("Password: ");
-        String password = sc.next();
-
-        Rol rol = seleccionarRol(sc);
-
-        if (rol == null) {
-            System.out.println("Rol no valido.");
+            System.out.println("===== RESULTADOS BUSQUEDA AVANZADA DE PRODUCTOS =====");
+            System.out.println("Categoria: " + categoria.toUpperCase());
+            System.out.printf("Precio minimo: %.2f%n", precioMinimo);
+            System.out.printf("Precio maximo: %.2f%n", precioMaximo);
             System.out.println();
-            return;
-        }
 
-        Usuario usuario = new Usuario();
-        usuario.setNombreUsuario(nombreUsuario);
-        usuario.setPassword(password);
-        usuario.setRol(rol);
+            if (productosFiltrados.isEmpty()) {
+                System.out.println("No se encontro ningun producto con los criterios de busqueda ingresados.");
+            } else {
+                mostrarTablaProductosDetallada(productosFiltrados);
+            }
 
-        if (usuarioDAO.insertarUsuario(usuario)) {
-            System.out.println("Usuario registrado correctamente en la base de datos.");
-            usuarios.clear();
-            usuarios.addAll(usuarioDAO.listarUsuarios());
-        } else {
-            System.out.println("No se pudo registrar el usuario.");
-        }
-
-        System.out.println();
-    }
-
-    public void buscarUsuariosPorRol(ArrayList<Usuario> usuarios, Scanner sc) {
-        System.out.println("===== BUSCAR USUARIOS POR ROL =====");
-
-        Rol rol = seleccionarRol(sc);
-
-        if (rol == null) {
-            System.out.println("Rol no valido.");
-            System.out.println();
-            return;
-        }
-
-        UsuarioDAO usuarioDAO = new UsuarioDAO();
-        ArrayList<Usuario> usuariosFiltrados = usuarioDAO.listarUsuariosPorRol(rol);
-
-        if (usuariosFiltrados.isEmpty()) {
-            System.out.println("No hay usuarios registrados con ese rol.");
-            System.out.println();
-            return;
-        }
-
-        mostrarUsuarios(usuariosFiltrados);
-    }
-
-    public void editarUsuario(ArrayList<Usuario> usuarios, Scanner sc) {
-        System.out.println("===== EDITAR USUARIO =====");
-        mostrarUsuarios(usuarios);
-
-        int id = leerEnteroPositivo(sc, "Ingrese ID del usuario a editar: ");
-        Usuario usuario = buscarUsuarioPorId(usuarios, id);
-
-        if (usuario == null) {
-            System.out.println("Usuario no encontrado.");
-            System.out.println();
-            return;
-        }
-
-        System.out.println("Usuario actual: " + usuario.getNombreUsuario());
-        System.out.print("Nuevo nombre de usuario: ");
-        String nuevoNombre = sc.next();
-
-        System.out.print("Nuevo password: ");
-        String nuevoPassword = sc.next();
-
-        Rol nuevoRol = seleccionarRol(sc);
-
-        if (nuevoRol == null) {
-            System.out.println("Rol no valido.");
-            System.out.println();
-            return;
-        }
-
-        usuario.setNombreUsuario(nuevoNombre);
-        usuario.setPassword(nuevoPassword);
-        usuario.setRol(nuevoRol);
-
-        UsuarioDAO usuarioDAO = new UsuarioDAO();
-
-        if (usuarioDAO.actualizarUsuario(usuario)) {
-            System.out.println("Usuario actualizado correctamente.");
-            usuarios.clear();
-            usuarios.addAll(usuarioDAO.listarUsuarios());
-        } else {
-            System.out.println("No se pudo actualizar el usuario.");
-        }
-
-        System.out.println();
-    }
-
-    public void eliminarUsuario(ArrayList<Usuario> usuarios, Scanner sc) {
-        System.out.println("===== ELIMINAR USUARIO =====");
-        mostrarUsuarios(usuarios);
-
-        int id = leerEnteroPositivo(sc, "Ingrese ID del usuario a eliminar: ");
-        Usuario usuario = buscarUsuarioPorId(usuarios, id);
-
-        if (usuario == null) {
-            System.out.println("Usuario no encontrado.");
-            System.out.println();
-            return;
-        }
-
-        if (usuario.getNombreUsuario().equalsIgnoreCase("admin")) {
-            System.out.println("No se recomienda eliminar el usuario administrador principal.");
-            System.out.println();
-            return;
-        }
-
-        System.out.print("Confirme eliminacion escribiendo SI: ");
-        String confirmacion = sc.next();
-
-        if (!confirmacion.equalsIgnoreCase("SI")) {
-            System.out.println("Eliminacion cancelada.");
-            System.out.println();
-            return;
-        }
-
-        UsuarioDAO usuarioDAO = new UsuarioDAO();
-
-        if (usuarioDAO.eliminarUsuario(id)) {
-            System.out.println("Usuario eliminado correctamente.");
-            usuarios.clear();
-            usuarios.addAll(usuarioDAO.listarUsuarios());
-        } else {
-            System.out.println("No se pudo eliminar el usuario.");
-        }
-
-        System.out.println();
-    }
-
-    public Usuario buscarUsuarioPorId(ArrayList<Usuario> usuarios, int id) {
-        for (Usuario usuario : usuarios) {
-            if (usuario.getId() == id) {
-                return usuario;
+            int opcion = solicitarOpcionFinalBusqueda(sc);
+            if (opcion == 0) {
+                repetirBusqueda = false;
             }
         }
-
-        return null;
     }
 
-    public Rol seleccionarRol(Scanner sc) {
-        System.out.println("Seleccione rol:");
-        System.out.println("1. ADMINISTRADOR");
-        System.out.println("2. GERENTE_INVENTARIO");
-        System.out.println("3. OPERADOR_PEDIDOS");
+    private String solicitarCategoriaProducto(ArrayList<Producto> productos, Scanner sc) {
+        while (true) {
+            System.out.println("===== BUSQUEDA AVANZADA DE PRODUCTOS =====");
+            System.out.println("Categorias disponibles:");
+            mostrarCategoriasDisponibles(productos);
+            System.out.println("0. Atras");
+            System.out.print("Ingrese categoria del producto: ");
 
-        int opcionRol = leerEnteroPositivo(sc, "Opcion: ");
+            String entrada = sc.nextLine().trim();
 
-        switch (opcionRol) {
-            case 1:
-                return Rol.ADMINISTRADOR;
-            case 2:
-                return Rol.GERENTE_INVENTARIO;
-            case 3:
-                return Rol.OPERADOR_PEDIDOS;
-            default:
+            if (entrada.equals("0")) {
                 return null;
+            }
+
+            String categoriaEncontrada = buscarCategoriaExacta(productos, entrada);
+
+            if (categoriaEncontrada != null) {
+                return categoriaEncontrada;
+            }
+
+            System.out.println();
+            System.out.println("Alerta: la categoria ingresada no existe en el inventario.");
+            System.out.println("Seleccione una categoria valida de la siguiente lista:");
+            mostrarCategoriasDisponibles(productos);
+            System.out.println();
         }
+    }
+
+    private Double solicitarPrecio(Scanner sc, String mensaje) {
+        while (true) {
+            System.out.println("0. Atras");
+            System.out.print(mensaje);
+
+            String entrada = sc.nextLine().trim();
+
+            if (entrada.equals("0")) {
+                return null;
+            }
+
+            try {
+                double precio = Double.parseDouble(entrada.replace(",", "."));
+
+                if (precio < 0) {
+                    System.out.println("Alerta: el precio no puede ser negativo.");
+                    System.out.println();
+                } else {
+                    return precio;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Alerta: debe ingresar un numero valido. Puede usar enteros o decimales.");
+                System.out.println();
+            }
+        }
+    }
+
+    private Double solicitarPrecioMaximo(Scanner sc, double precioMinimo) {
+        while (true) {
+            Double precioMaximo = solicitarPrecio(sc, "Ingrese precio maximo: ");
+
+            if (precioMaximo == null) {
+                return null;
+            }
+
+            if (precioMaximo < precioMinimo) {
+                System.out.println("Alerta: el precio maximo no puede ser menor que el precio minimo.");
+                System.out.println();
+            } else {
+                return precioMaximo;
+            }
+        }
+    }
+
+    private int solicitarOpcionFinalBusqueda(Scanner sc) {
+        while (true) {
+            System.out.println();
+            System.out.println("1. Realizar otra busqueda");
+            System.out.println("0. Volver al menu principal");
+            System.out.print("Seleccione una opcion: ");
+
+            String entrada = sc.nextLine().trim();
+
+            if (entrada.equals("1")) {
+                System.out.println();
+                return 1;
+            }
+
+            if (entrada.equals("0")) {
+                System.out.println();
+                return 0;
+            }
+
+            System.out.println("Alerta: opcion no valida. Ingrese 1 o 0.");
+        }
+    }
+
+    private String buscarCategoriaExacta(ArrayList<Producto> productos, String categoriaIngresada) {
+        String categoriaNormalizada = normalizarTexto(categoriaIngresada);
+
+        return productos.stream()
+                .map(this::obtenerCategoriaProducto)
+                .distinct()
+                .filter(categoria -> normalizarTexto(categoria).equals(categoriaNormalizada))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private void mostrarCategoriasDisponibles(ArrayList<Producto> productos) {
+        productos.stream()
+                .map(this::obtenerCategoriaProducto)
+                .distinct()
+                .forEach(categoria -> System.out.println("- " + categoria));
+    }
+
+    private String obtenerCategoriaProducto(Producto producto) {
+        if (producto instanceof Computadora) {
+            return "COMPUTADORA";
+        }
+
+        if (producto instanceof Electrodomestico) {
+            return "ELECTRODOMESTICO";
+        }
+
+        return producto.getClass().getSimpleName().toUpperCase();
+    }
+
+    private String normalizarTexto(String texto) {
+        return texto.trim()
+                .toUpperCase()
+                .replace("Á", "A")
+                .replace("É", "E")
+                .replace("Í", "I")
+                .replace("Ó", "O")
+                .replace("Ú", "U");
+    }
+
+    private void mostrarTablaProductosDetallada(List<Producto> productos) {
+        System.out.printf("%-5s %-10s %-24s %-18s %-13s %-8s %-18s %-10s %-20s %-12s%n",
+                "No.", "CODIGO", "NOMBRE", "CATEGORIA", "P. BASE", "STOCK",
+                "PROCESADOR", "RAM", "CONSUMO", "GARANTIA");
+        System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------");
+
+        int numero = 1;
+
+        for (Producto producto : productos) {
+            String procesador = "N/A";
+            String ram = "N/A";
+            String consumo = "N/A";
+            String garantia = "N/A";
+
+            if (producto instanceof Computadora) {
+                Computadora computadora = (Computadora) producto;
+                procesador = computadora.getProcesador();
+                ram = computadora.getRamGB() + " GB";
+            }
+
+            if (producto instanceof Electrodomestico) {
+                Electrodomestico electrodomestico = (Electrodomestico) producto;
+                consumo = electrodomestico.getConsumoEnergetico();
+                garantia = electrodomestico.getGarantiaMeses() + " meses";
+            }
+
+            System.out.printf("%-5d %-10s %-24s %-18s %-13.2f %-8d %-18s %-10s %-20s %-12s%n",
+                    numero,
+                    producto.getCodigo(),
+                    producto.getNombre(),
+                    obtenerCategoriaProducto(producto),
+                    producto.getPrecioBase(),
+                    producto.getStock(),
+                    procesador,
+                    ram,
+                    consumo,
+                    garantia);
+
+            numero++;
+        }
+
+        System.out.println();
     }
 
     public void mostrarReportes(ArrayList<Pedido> pedidos,

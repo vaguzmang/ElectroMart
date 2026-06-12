@@ -38,18 +38,7 @@ public class PedidoDAO {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                Cliente cliente = new Cliente();
-                cliente.setId(rs.getInt("cliente_id"));
-                cliente.setNombre(rs.getString("cliente_nombre"));
-                cliente.setEmail(rs.getString("email"));
-                cliente.setTelefono(rs.getString("telefono"));
-
-                Pedido pedido = new Pedido();
-                pedido.setId(rs.getInt("pedido_id"));
-                pedido.setCliente(cliente);
-                pedido.setFecha(rs.getString("fecha"));
-                pedido.setEstado(EstadoPedido.valueOf(rs.getString("estado")));
-
+                Pedido pedido = crearPedidoDesdeResultSet(rs);
                 ArrayList<DetallePedido> detalles = listarDetallesPorPedido(pedido.getId());
 
                 for (DetallePedido detalle : detalles) {
@@ -65,6 +54,46 @@ public class PedidoDAO {
         }
 
         return pedidos;
+    }
+
+    public Pedido buscarPedidoPorId(int idPedido) {
+        String sqlPedido = """
+                           SELECT p.id AS pedido_id,
+                                  p.fecha,
+                                  p.estado,
+                                  c.id AS cliente_id,
+                                  c.nombre AS cliente_nombre,
+                                  c.email,
+                                  c.telefono
+                           FROM pedidos p
+                           INNER JOIN clientes c ON p.cliente_id = c.id
+                           WHERE p.id = ?
+                           """;
+
+        try (Connection conexion = ConexionBD.obtenerConexion();
+             PreparedStatement ps = conexion.prepareStatement(sqlPedido)) {
+
+            ps.setInt(1, idPedido);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Pedido pedido = crearPedidoDesdeResultSet(rs);
+                    ArrayList<DetallePedido> detalles = listarDetallesPorPedido(pedido.getId());
+
+                    for (DetallePedido detalle : detalles) {
+                        pedido.agregarDetalle(detalle);
+                    }
+
+                    return pedido;
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al buscar pedido en la base de datos.");
+            System.out.println("Detalle: " + e.getMessage());
+        }
+
+        return null;
     }
 
     private ArrayList<DetallePedido> listarDetallesPorPedido(int pedidoId) {
@@ -119,11 +148,7 @@ public class PedidoDAO {
         String sqlPedido = "INSERT INTO pedidos (cliente_id, fecha, estado) VALUES (?, ?, ?)";
         String sqlDetalle = """
                             INSERT INTO detalle_pedido (
-                                pedido_id,
-                                producto_id,
-                                cantidad,
-                                precio_unitario,
-                                subtotal
+                                pedido_id, producto_id, cantidad, precio_unitario, subtotal
                             ) VALUES (?, ?, ?, ?, ?)
                             """;
         String sqlActualizarStock = "UPDATE productos SET stock = stock - ? WHERE id = ?";
@@ -197,6 +222,21 @@ public class PedidoDAO {
         }
     }
 
+    private Pedido crearPedidoDesdeResultSet(ResultSet rs) throws SQLException {
+        Cliente cliente = new Cliente();
+        cliente.setId(rs.getInt("cliente_id"));
+        cliente.setNombre(rs.getString("cliente_nombre"));
+        cliente.setEmail(rs.getString("email"));
+        cliente.setTelefono(rs.getString("telefono"));
+
+        Pedido pedido = new Pedido();
+        pedido.setId(rs.getInt("pedido_id"));
+        pedido.setCliente(cliente);
+        pedido.setFecha(rs.getString("fecha"));
+        pedido.setEstado(EstadoPedido.valueOf(rs.getString("estado")));
+        return pedido;
+    }
+
     private int buscarProductoIdPorCodigo(Connection conexion, String codigo) throws SQLException {
         String sql = "SELECT id FROM productos WHERE codigo = ?";
 
@@ -218,26 +258,22 @@ public class PedidoDAO {
 
         if (tipo.equalsIgnoreCase("COMPUTADORA")) {
             Computadora computadora = new Computadora();
-
             computadora.setCodigo(rs.getString("codigo"));
             computadora.setNombre(rs.getString("nombre"));
             computadora.setPrecioBase(rs.getDouble("precio_base"));
             computadora.setStock(rs.getInt("stock"));
             computadora.setProcesador(rs.getString("procesador"));
             computadora.setRamGB(rs.getInt("ram_gb"));
-
             return computadora;
         }
 
         Electrodomestico electrodomestico = new Electrodomestico();
-
         electrodomestico.setCodigo(rs.getString("codigo"));
         electrodomestico.setNombre(rs.getString("nombre"));
         electrodomestico.setPrecioBase(rs.getDouble("precio_base"));
         electrodomestico.setStock(rs.getInt("stock"));
         electrodomestico.setConsumoEnergetico(rs.getString("consumo_energetico"));
         electrodomestico.setGarantiaMeses(rs.getInt("garantia_meses"));
-
         return electrodomestico;
     }
 }

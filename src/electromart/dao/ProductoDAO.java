@@ -15,39 +15,14 @@ public class ProductoDAO {
     public ArrayList<Producto> listarProductos() {
         ArrayList<Producto> productos = new ArrayList<>();
 
-        String sql = "SELECT * FROM productos";
+        String sql = "SELECT * FROM productos ORDER BY id";
 
         try (Connection conexion = ConexionBD.obtenerConexion();
              PreparedStatement ps = conexion.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                String tipo = rs.getString("tipo");
-
-                if (tipo.equalsIgnoreCase("COMPUTADORA")) {
-                    Computadora computadora = new Computadora();
-
-                    computadora.setCodigo(rs.getString("codigo"));
-                    computadora.setNombre(rs.getString("nombre"));
-                    computadora.setPrecioBase(rs.getDouble("precio_base"));
-                    computadora.setStock(rs.getInt("stock"));
-                    computadora.setProcesador(rs.getString("procesador"));
-                    computadora.setRamGB(rs.getInt("ram_gb"));
-
-                    productos.add(computadora);
-
-                } else if (tipo.equalsIgnoreCase("ELECTRODOMESTICO")) {
-                    Electrodomestico electrodomestico = new Electrodomestico();
-
-                    electrodomestico.setCodigo(rs.getString("codigo"));
-                    electrodomestico.setNombre(rs.getString("nombre"));
-                    electrodomestico.setPrecioBase(rs.getDouble("precio_base"));
-                    electrodomestico.setStock(rs.getInt("stock"));
-                    electrodomestico.setConsumoEnergetico(rs.getString("consumo_energetico"));
-                    electrodomestico.setGarantiaMeses(rs.getInt("garantia_meses"));
-
-                    productos.add(electrodomestico);
-                }
+                productos.add(crearProductoDesdeResultSet(rs));
             }
 
         } catch (SQLException e) {
@@ -58,18 +33,33 @@ public class ProductoDAO {
         return productos;
     }
 
+    public Producto buscarProductoPorCodigo(String codigo) {
+        String sql = "SELECT * FROM productos WHERE codigo = ?";
+
+        try (Connection conexion = ConexionBD.obtenerConexion();
+             PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+            ps.setString(1, codigo);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return crearProductoDesdeResultSet(rs);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al buscar producto en la base de datos.");
+            System.out.println("Detalle: " + e.getMessage());
+        }
+
+        return null;
+    }
+
     public boolean insertarComputadora(Computadora computadora) {
         String sql = """
                      INSERT INTO productos (
-                         codigo,
-                         nombre,
-                         tipo,
-                         precio_base,
-                         stock,
-                         procesador,
-                         ram_gb,
-                         consumo_energetico,
-                         garantia_meses
+                         codigo, nombre, tipo, precio_base, stock,
+                         procesador, ram_gb, consumo_energetico, garantia_meses
                      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                      """;
 
@@ -87,7 +77,6 @@ public class ProductoDAO {
             ps.setObject(9, null);
 
             int filasInsertadas = ps.executeUpdate();
-
             return filasInsertadas > 0;
 
         } catch (SQLException e) {
@@ -100,15 +89,8 @@ public class ProductoDAO {
     public boolean insertarElectrodomestico(Electrodomestico electrodomestico) {
         String sql = """
                      INSERT INTO productos (
-                         codigo,
-                         nombre,
-                         tipo,
-                         precio_base,
-                         stock,
-                         procesador,
-                         ram_gb,
-                         consumo_energetico,
-                         garantia_meses
+                         codigo, nombre, tipo, precio_base, stock,
+                         procesador, ram_gb, consumo_energetico, garantia_meses
                      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                      """;
 
@@ -126,7 +108,6 @@ public class ProductoDAO {
             ps.setInt(9, electrodomestico.getGarantiaMeses());
 
             int filasInsertadas = ps.executeUpdate();
-
             return filasInsertadas > 0;
 
         } catch (SQLException e) {
@@ -134,5 +115,29 @@ public class ProductoDAO {
             System.out.println("Detalle: " + e.getMessage());
             return false;
         }
+    }
+
+    private Producto crearProductoDesdeResultSet(ResultSet rs) throws SQLException {
+        String tipo = rs.getString("tipo");
+
+        if (tipo.equalsIgnoreCase("COMPUTADORA")) {
+            Computadora computadora = new Computadora();
+            computadora.setCodigo(rs.getString("codigo"));
+            computadora.setNombre(rs.getString("nombre"));
+            computadora.setPrecioBase(rs.getDouble("precio_base"));
+            computadora.setStock(rs.getInt("stock"));
+            computadora.setProcesador(rs.getString("procesador"));
+            computadora.setRamGB(rs.getInt("ram_gb"));
+            return computadora;
+        }
+
+        Electrodomestico electrodomestico = new Electrodomestico();
+        electrodomestico.setCodigo(rs.getString("codigo"));
+        electrodomestico.setNombre(rs.getString("nombre"));
+        electrodomestico.setPrecioBase(rs.getDouble("precio_base"));
+        electrodomestico.setStock(rs.getInt("stock"));
+        electrodomestico.setConsumoEnergetico(rs.getString("consumo_energetico"));
+        electrodomestico.setGarantiaMeses(rs.getInt("garantia_meses"));
+        return electrodomestico;
     }
 }

@@ -143,6 +143,18 @@ public class ElectroMart {
                             menu.pausar(sc);
                             break;
 
+                        case 7:
+                            if (usuarioActual.esAdministrador()
+                                    || usuarioActual.esGerenteInventario()
+                                    || usuarioActual.esOperadorPedidos()) {
+                                System.out.println();
+                                controller.busquedaAvanzadaProductos(productos, sc);
+                            } else {
+                                System.out.println("No tiene permisos para usar busqueda avanzada de productos.");
+                                System.out.println();
+                            }
+                            break;
+
                         case 8:
                             if (usuarioActual.esAdministrador() || usuarioActual.esGerenteInventario()) {
                                 System.out.println();
@@ -201,50 +213,6 @@ public class ElectroMart {
                         case 13:
                             System.out.println();
                             controller.mostrarAcercaDelSistema();
-                            menu.pausar(sc);
-                            break;
-
-                        case 14:
-                            if (usuarioActual.esAdministrador()) {
-                                System.out.println();
-                                controller.registrarUsuario(usuarios, sc);
-                            } else {
-                                System.out.println("No tiene permisos para registrar usuarios.");
-                                System.out.println();
-                            }
-                            menu.pausar(sc);
-                            break;
-
-                        case 15:
-                            if (usuarioActual.esAdministrador()) {
-                                System.out.println();
-                                controller.buscarUsuariosPorRol(usuarios, sc);
-                            } else {
-                                System.out.println("No tiene permisos para buscar usuarios por rol.");
-                                System.out.println();
-                            }
-                            menu.pausar(sc);
-                            break;
-
-                        case 16:
-                            if (usuarioActual.esAdministrador()) {
-                                System.out.println();
-                                controller.editarUsuario(usuarios, sc);
-                            } else {
-                                System.out.println("No tiene permisos para editar usuarios.");
-                                System.out.println();
-                            }
-                            menu.pausar(sc);
-                            break;
-
-                        case 17:
-                            if (usuarioActual.esAdministrador()) {
-                                System.out.println();
-                                controller.eliminarUsuario(usuarios, sc);
-                            } else {
-                                System.out.println("No tiene permisos para eliminar usuarios.");
-                                System.out.println();
-                            }
                             menu.pausar(sc);
                             break;
 
