@@ -1,3 +1,6 @@
+https://chatgpt.com/share/e/6a2b5d85-00d0-8329-8e7d-c60d97aaa973
+
+
 ## Busqueda Avanzada de Productos
 
 El sistema ElectroMart incluye una funcionalidad de Busqueda Avanzada de Productos disponible desde el menu principal con la opcion:
